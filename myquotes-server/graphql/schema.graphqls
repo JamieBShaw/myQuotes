@@ -1,0 +1,134 @@
+# GraphQL schema example
+
+scalar Time
+
+type Quote {
+  id: ID!
+  body: String!
+  author: Author!
+  dateOf: Time
+  subject: String
+  user: User!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type Author {
+  id: ID!
+  name: String!
+  subject: String
+  DOB: Time!
+  DOD: Time!
+  quotes: [Quote!]!
+  user: User!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type AuthToken {
+  accessToken: String!
+  expiredAt: Time!
+}
+
+type AuthPayload {
+  authToken: AuthToken!
+  user: User!
+}
+
+input UserFilter {
+  username: String
+}
+
+input AuthorFilter {
+  name: String
+  subject: String
+}
+
+input QuoteFilter {
+  authorId: ID
+  userId: ID
+  subject: String
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input LoginInput {
+  usernameOrEmail: String!
+  password: String!
+}
+
+input QuoteCreateInput {
+  body: String!
+  authorId: ID!
+  dateOf: Time!
+  subject: String!
+}
+
+input AuthorCreateInput {
+  name: String!
+  DOD: Time!
+  DOB: Time!
+}
+
+input EditQuote {
+  id: ID!
+  body: String
+  author: String
+  dateOf: Time
+  subject: String
+}
+
+input EditAuthor {
+  id: ID!
+  name: String
+  subject: String
+}
+
+type Query {
+  user(id: ID!): User!
+  users(filter: UserFilter): [User!]!
+
+  quote(id: ID!): Quote!
+  quotes(filter: QuoteFilter): [Quote!]!
+
+  author(id: ID!): Author!
+  authors(filter: AuthorFilter): [Author!]!
+}
+
+type Mutation {
+  registerUser(input: RegisterInput!): AuthPayload!
+  loginUser(input: LoginInput!): AuthPayload!
+
+  createQuote(input: QuoteCreateInput!): Quote!
+  createAuthor(input: AuthorCreateInput!): Author!
+
+  editQuoteBody(id: ID!, body: String!): Quote!
+  editQuoteAuthor(id: ID!, name: String!): Quote!
+  editQuoteSubject(id: ID!, subject: String!): Quote!
+  editQuoteDateOf(id: ID!, dateOf: String!): Quote!
+
+  editAuthorName(id: ID!, name: String!): Author!
+  editAuthorSubject(id: ID!, subject: String!): Author!
+  editAuthorDOB(id: ID!, DOB: Time!): Author!
+  editAuthorDOD(id: ID!, DOD: Time!): Author!
+
+  # TODO: Begin implementing delete functionality
+
+  # TODO: Begin implementing upvote/ like functionality for quotes and authors
+
+  # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
+}
