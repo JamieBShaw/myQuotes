@@ -6,17 +6,25 @@ import (
 	"github.com/go-pg/pg/v10"
 )
 
-type Database struct {
-
+type Repository struct {
+	DB      *pg.DB
 }
+
 
 type DBLogger struct{}
 
 var (
 	URepo = "[UserRepo] "
-	ARepo = "[AuthorsRepo] "
+	ARepo = "[Repository] "
 	QRepo = "[QuotesRepo] "
 )
+
+func Set(db *pg.DB) *Repository {
+	return &Repository{
+		DB: db,
+	}
+}
+
 
 func (d DBLogger) BeforeQuery(ctx context.Context, q *pg.QueryEvent) (context.Context, error) {
 	return ctx, nil

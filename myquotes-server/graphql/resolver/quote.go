@@ -13,10 +13,10 @@ func (r *Resolver) Quote() generated.QuoteResolver { return &quoteResolver{r} }
 
 // Returns the author of a specific quote by using quote.author_id
 func (q *quoteResolver) Author(ctx context.Context, quote *model.Quote) (*model.Author, error) {
-	return q.AuthorRepo.ByQuote(quote)
+	return q.Repo.AuthorByQuote(quote)
 }
 
 // Returns the User where the User.ID == Quote.user_id
 func (q *quoteResolver) User(ctx context.Context, quote *model.Quote) (*model.User, error) {
-	return q.UserRepo.ByQuote(quote)
+	return q.Repo.ByQuote(quote)
 }

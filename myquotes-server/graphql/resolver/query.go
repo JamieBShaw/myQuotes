@@ -13,25 +13,25 @@ type queryResolver struct{ *Resolver }
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	return r.UserRepo.ById(id)
+	return r.Repo.UserByID(id)
 }
 
 func (r *queryResolver) Users(ctx context.Context, filter *model.UserFilter) ([]*model.User, error) {
-	return r.UserRepo.Many(filter)
+	return r.Repo.GetUsers(filter)
 }
 
 func (r *queryResolver) Quote(ctx context.Context, id string) (*model.Quote, error) {
-	return r.QuoteRepo.ByID(id)
+	return r.Repo.QuoteByID(id)
 }
 
 func (r *queryResolver) Quotes(ctx context.Context, filter *model.QuoteFilter) ([]*model.Quote, error) {
-	return r.QuoteRepo.Many(filter)
+	return r.Repo.GetQuotes(filter)
 }
 
 func (r *queryResolver) Author(ctx context.Context, id string) (*model.Author, error) {
-	return r.AuthorRepo.ByID(id)
+	return r.Repo.AuthorByID(id)
 }
 
 func (r *queryResolver) Authors(ctx context.Context, filter *model.AuthorFilter) ([]*model.Author, error) {
-	return r.AuthorRepo.Many(filter)
+	return r.Repo.GetAuthors(filter)
 }

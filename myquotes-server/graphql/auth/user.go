@@ -9,7 +9,7 @@ import (
 )
 
 func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error) {
-	log.Info("[auth] Registering User ")
+	log.Info("[Auth] Registering User ")
 
 	_, err := a.userRepo.ByField("email", input.Email)
 	if err == nil {
@@ -34,7 +34,7 @@ func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*mo
 		return nil, GenericErr
 	}
 
-	_, err = a.userRepo.Create(user)
+	_, err = a.userRepo.CreateUser(user)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -44,7 +44,9 @@ func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*mo
 		return nil, GenericErr
 	}
 
-	log.Info("[auth] User Successfully Registered")
+	user.IsLoggedIn = true
+
+	log.Info("[Auth] User Successfully Registered")
 	return &model.AuthPayload{
 		AuthToken: token,
 		User:      user,
@@ -53,7 +55,7 @@ func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*mo
 }
 
 func (a *Auth) LoginUser(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
-	log.Info("[auth] Logging In User")
+	log.Info("[Auth] Logging In User")
 
 	user, err := a.userRepo.ByFieldOrField("email", input.UsernameOrEmail, "username", input.UsernameOrEmail)
 	if err != nil {
@@ -77,6 +79,8 @@ func (a *Auth) LoginUser(ctx context.Context, input model.LoginInput) (*model.Au
 	if err != nil {
 		return nil, GenericErr
 	}
+
+	user.IsLoggedIn = true
 
 	log.Info("[domain] User Logged In")
 	return &model.AuthPayload{

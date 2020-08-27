@@ -3,14 +3,13 @@ package auth
 import (
 	"context"
 	"errors"
+
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 )
 
 // Authentication and queries or mutations that require auth must pass through auth package
 type Auth struct {
-	userRepo model.UserRepository
-	authorRepo model.AuthorRepository
-	quoteRepo model.QuoteRepository
+	Repo model.Repository
 }
 
 // Literally don't need this interface, the generated.mutationResolver interface implements all these methods
@@ -25,11 +24,9 @@ type AuthServices interface {
 	CreateAuthor(ctx context.Context, input model.AuthorCreateInput) (*model.Author, error)
 }
 
-func NewAuth(UserRepo model.UserRepository, AuthorRepo model.AuthorRepository, QuoteRepo model.QuoteRepository ) *Auth {
+func NewAuth(repo model.Repository) *Auth {
 	return &Auth{
-		userRepo:   UserRepo,
-		authorRepo: AuthorRepo,
-		quoteRepo:  QuoteRepo,
+		Repo: repo,
 	}
 }
 

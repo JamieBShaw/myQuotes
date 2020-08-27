@@ -14,21 +14,21 @@ import (
 
 const CurrentUserKey = "currentUser"
 
-func AuthMiddleware(userRepo *database.UsersRepo) func(http.Handler) http.Handler {
+func AuthMiddleware(db *database.Repository) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			// get token
 			token, err := parseToken(r)
 			// If token could not be parsed from header or nil next handler
 			if token == nil || err != nil {
-				l.Warnf("ERROR parsing token: No token in request header, proceeding to next handler")
+				l.Warnf("ERROR parsing token: No token in request header, proceeding to next handler", err)
 				next.ServeHTTP(rw, r)
 				return
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				l.Info("Claims jit:  ", claims["jti"].(string))
 
-				user, err := userRepo.ById(claims["jti"].(string))
+				user, err := db.UserByID(claims["jti"].(string))
 				if err != nil {
 					next.ServeHTTP(rw, r)
 					return

@@ -8,7 +8,6 @@ import (
 	customMiddleware "github.com/JamieBShaw/myquotes-server/graphql/middleware"
 	"github.com/rs/cors"
 
-	authentication "github.com/JamieBShaw/myquotes-server/graphql/auth"
 	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi"
@@ -31,27 +30,24 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	db := database.New(&pg.Options{
+	config := database.New(&pg.Options{
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASS"),
 		Database: os.Getenv("DB_NAME"),
 	})
 
-	userRepo := database.NewUserRepo(db)
-	quoteRepo := database.NewQuoteRepo(db)
-	authorRepo := database.NewAuthorRepo(db)
+	db := database.Set(config)
 
-	defer db.Close()
+	defer db.DB.Begin()
 
-	db.AddQueryHook(database.DBLogger{})
+	db.DB.AddQueryHook(database.DBLogger{})
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	auth := authentication.NewAuth(userRepo, authorRepo, quoteRepo)
-	baseResolver := resolver.NewResolver(userRepo, authorRepo, quoteRepo, auth)
+	baseResolver := resolver.NewResolver(db)
 
 	conf := generated.Config{
 		Resolvers: baseResolver,
@@ -70,7 +66,7 @@ func main() {
 	router.Use(cors.New(opts).Handler)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
-	router.Use(customMiddleware.AuthMiddleware(userRepo))
+	router.Use(customMiddleware.AuthMiddleware(db))
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)

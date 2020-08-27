@@ -17,13 +17,14 @@ type Author struct {
 }
 
 type AuthorRepository interface {
-	Many(filter *AuthorFilter) ([]*Author, error)
+	GetAuthors(filter *AuthorFilter) ([]*Author, error)
 
-	ByID(id string) (*Author, error)
-	ByQuote(quote *Quote) (*Author, error)
+	AuthorByID(id string) (*Author, error)
+	AuthorByQuote(quote *Quote) (*Author, error)
 
-	Create(author *Author) (*Author, error)
-	Update(author *Author) (*Author, error)
+	CreateAuthor(author *Author) (*Author, error)
+	UpdateAuthor(author *Author) (*Author, error)
+	UpdateByField(field, value, id string) (*Author, error)
 }
 
 type AuthorFilter struct {

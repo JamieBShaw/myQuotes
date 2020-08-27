@@ -4,24 +4,19 @@ import (
 	"fmt"
 
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
-	"github.com/go-pg/pg/v10"
 	log "github.com/sirupsen/logrus"
 )
 
-type AuthorsRepo struct {
-	db *pg.DB
-}
 
-func NewAuthorRepo(db *pg.DB) *AuthorsRepo {
-	return &AuthorsRepo{db: db}
-}
 
-func (a *AuthorsRepo) Many(filter *model.AuthorFilter) ([]*model.Author, error) {
+
+
+func (r *Repository) GetAuthors(filter *model.AuthorFilter) ([]*model.Author, error) {
 	log.Info(ARepo, " Getting Authors by subject and or name")
 
 	var author []*model.Author
 
-	query := a.db.Model(&author)
+	query := r.DB.Model(&author)
 
 	if filter != nil {
 
@@ -40,34 +35,32 @@ func (a *AuthorsRepo) Many(filter *model.AuthorFilter) ([]*model.Author, error) 
 	return author, nil
 }
 
-func (a *AuthorsRepo) ByID(id string) (*model.Author, error) {
+func (r *Repository) AuthorByID(id string) (*model.Author, error) {
 	log.Info(ARepo, " Getting Author by id")
 
-
 	var author model.Author
-	if err := a.db.Model(&author).Where("id = ?", id).Select(); err != nil {
+	if err := r.DB.Model(&author).Where("id = ?", id).Select(); err != nil {
 		log.Error("Could not find author with id: ", id, " ", err)
 	}
 	return &author, nil
 }
 
-func (a *AuthorsRepo) ByQuote(quote *model.Quote) (*model.Author, error) {
+func (r *Repository) AuthorByQuote(quote *model.Quote) (*model.Author, error) {
 	log.Info(ARepo, " Getting Authors where Quote.author_id is equal to Author.ID")
 
 	var author model.Author
 
-	if err := a.db.Model(&author).Where("id = ?", quote.AuthorID).Select(); err != nil {
+	if err := r.DB.Model(&author).Where("id = ?", quote.AuthorID).Select(); err != nil {
 		log.Error("Could not find author with quote id ", quote.AuthorID, err)
 		return nil, err
 	}
 	return &author, nil
 }
 
-// TODO: use orm.Result and see if returning function does anything good
-func (a *AuthorsRepo) Create(author *model.Author) (*model.Author, error) {
+func (r *Repository) CreateAuthor(author *model.Author) (*model.Author, error) {
 	log.Info(ARepo, " Creating Author")
 
-	_, err := a.db.Model(&author).Returning("*").Insert()
+	_, err := r.DB.Model(&author).Returning("*").Insert()
 	if err != nil {
 		log.Error("Could not insert author", err)
 		return nil, err
@@ -78,14 +71,33 @@ func (a *AuthorsRepo) Create(author *model.Author) (*model.Author, error) {
 // Updates the entire author object, overwriting the row with new data
 // Obviously if some of the cols haven't changed by an input these are simply overwritten
 // but overwritten with the same data i.e. they do not change
-// TODO: Update function per field
-func (a *AuthorsRepo) Update(author *model.Author) (*model.Author, error) {
-	log.Info(ARepo, " Updating Author, author ID:  ", author.ID )
+// TODO: UpdateQuote function per field
+func (r *Repository) UpdateAuthor(author *model.Author) (*model.Author, error) {
+	log.Info(ARepo, " Updating Author, author ID:  ", author.ID)
 
-	_ , err := a.db.Model(author).Update()
+	_, err := r.DB.Model(author).Update()
 	if err != nil {
+		log.Error("Unable to update author ", err)
 		return nil, err
 	}
 
 	return author, nil
+}
+
+func (r *Repository) UpdateByField(field, value, id string) (*model.Author, error) {
+	var author model.Author
+
+	log.Info("FIELD:   ", field)
+	log.Info("VALUE:  ", value)
+
+	res, err := r.DB.Model(&author).Value(fmt.Sprintf("%s", field), fmt.Sprintf("%s", value)).Where("id = ?", id).Update()
+
+	if err != nil {
+		log.Error("ERROR:   ", err)
+		return nil, err
+	}
+
+	log.Info("RESULT:   ", res)
+
+	return &author, nil
 }

@@ -18,11 +18,11 @@ type Quote struct {
 }
 
 type QuoteRepository interface {
-	Many(filter *QuoteFilter) ([]*Quote, error)
-	ByID(id string) (*Quote, error)
-	ByAuthor(author *Author) ([]*Quote, error)
-	Create(quote *Quote) (*Quote, error)
-	Update(quote *Quote) (*Quote, error)
+	GetQuotes(filter *QuoteFilter) ([]*Quote, error)
+	QuoteByID(id string) (*Quote, error)
+	QuoteByAuthor(author *Author) ([]*Quote, error)
+	CreateQuote(quote *Quote) (*Quote, error)
+	UpdateQuote(quote *Quote) (*Quote, error)
 }
 
 type QuoteFilter struct {

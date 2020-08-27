@@ -1,7 +1,6 @@
 package resolver
 
 import (
-	"github.com/JamieBShaw/myquotes-server/graphql/generated"
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 )
 
@@ -10,18 +9,12 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	UserRepo   model.UserRepository
-	AuthorRepo model.AuthorRepository
-	QuoteRepo  model.QuoteRepository
-	//Auth       auth.AuthServices
-	Auth       generated.MutationResolver
+	Repo model.Repository
 }
 
-func NewResolver(UserRepo model.UserRepository, AuthorRepo model.AuthorRepository, QuoteRepo model.QuoteRepository, Auth generated.MutationResolver) *Resolver {
+func NewResolver(repo model.Repository, ) *Resolver {
 	return &Resolver{
-		UserRepo:   UserRepo,
-		AuthorRepo: AuthorRepo,
-		QuoteRepo:  QuoteRepo,
-		Auth: Auth,
+		Repo: repo,
+
 	}
 }

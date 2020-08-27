@@ -30,6 +30,7 @@ type User {
   username: String!
   email: String!
   password: String!
+  isLoggedIn: Boolean!
   createdAt: Time!
   updatedAt: Time!
 }
