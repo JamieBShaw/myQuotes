@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/JamieBShaw/myquotes-server/graphql/auth"
 	customMiddleware "github.com/JamieBShaw/myquotes-server/graphql/middleware"
 	"github.com/rs/cors"
 
@@ -30,7 +31,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	config := database.New(&pg.Options{
+	config := database.NewConf(&pg.Options{
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASS"),
 		Database: os.Getenv("DB_NAME"),
@@ -47,7 +48,8 @@ func main() {
 		port = defaultPort
 	}
 
-	baseResolver := resolver.NewResolver(db)
+	auth := auth.NewAuth(db)
+	baseResolver := resolver.NewResolver(*auth)
 
 	conf := generated.Config{
 		Resolvers: baseResolver,
@@ -58,11 +60,14 @@ func main() {
 	router := chi.NewRouter()
 
 	opts := cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
+			"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
+			"http://localhost:19006/", "http://192.168.0.189:19006/",
+			"http://localhost:19006"},
+
 		AllowCredentials: true,
 		Debug:            true,
 	}
-
 	router.Use(cors.New(opts).Handler)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)

@@ -14,12 +14,12 @@ func (r *Resolver) Author() generated.AuthorResolver { return &authorResolver{r}
 
 // Returns slice of the quotes by Author where Quote.author_id = Author.ID
 func (a *authorResolver) Quotes(ctx context.Context, author *model.Author) ([]*model.Quote, error) {
-	return a.Repo.QuoteByAuthor(author)
+	return a.Auth.Repo.QuoteByAuthor(author)
 }
 
 // Returns Authors created by user, where User.ID == Author.user_id
 func (a *authorResolver) User(ctx context.Context, author *model.Author) (*model.User, error) {
-	return a.Repo.UserByAuthor(author)
+	return a.Auth.Repo.UserByAuthor(author)
 }
 
 // TODO: Not sure what this is for specifically yet

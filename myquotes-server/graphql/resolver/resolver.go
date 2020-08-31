@@ -1,7 +1,7 @@
 package resolver
 
 import (
-	"github.com/JamieBShaw/myquotes-server/graphql/model"
+	"github.com/JamieBShaw/myquotes-server/graphql/auth"
 )
 
 // This file will not be regenerated automatically.
@@ -9,12 +9,11 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	Repo model.Repository
+	Auth auth.Auth
 }
 
-func NewResolver(repo model.Repository, ) *Resolver {
+func NewResolver(auth auth.Auth) *Resolver {
 	return &Resolver{
-		Repo: repo,
-
+		Auth: auth,
 	}
 }

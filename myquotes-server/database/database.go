@@ -3,13 +3,13 @@ package database
 import (
 	"context"
 	"fmt"
+
 	"github.com/go-pg/pg/v10"
 )
 
 type Repository struct {
-	DB      *pg.DB
+	DB *pg.DB
 }
-
 
 type DBLogger struct{}
 
@@ -25,7 +25,6 @@ func Set(db *pg.DB) *Repository {
 	}
 }
 
-
 func (d DBLogger) BeforeQuery(ctx context.Context, q *pg.QueryEvent) (context.Context, error) {
 	return ctx, nil
 }
@@ -39,6 +38,6 @@ func (d DBLogger) AfterQuery(ctx context.Context, q *pg.QueryEvent) error {
 	return nil
 }
 
-func New(opts *pg.Options) *pg.DB {
+func NewConf(opts *pg.Options) *pg.DB {
 	return pg.Connect(opts)
 }

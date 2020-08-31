@@ -24,7 +24,7 @@ func (a *Auth) CreateQuote(ctx context.Context, input model.QuoteCreateInput) (*
 	}
 
 	// Will return the slice of quotes of the author we just inserted a quote for
-	_, err = a.quoteRepo.CreateQuote(quote)
+	_, err = a.Repo.CreateQuote(quote)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (a *Auth) EditQuote(ctx context.Context, input model.EditQuote) (*model.Quo
 		return nil, AuthErr
 	}
 
-	quoteInDB, err := a.quoteRepo.QuoteByID(input.ID)
+	quoteInDB, err := a.Repo.QuoteByID(input.ID)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -59,7 +59,7 @@ func (a *Auth) EditQuote(ctx context.Context, input model.EditQuote) (*model.Quo
 		UserID:  user.ID,
 	}
 
-	_, err = a.quoteRepo.UpdateQuote(quote)
+	_, err = a.Repo.UpdateQuote(quote)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (a *Auth) EditQuoteBody(ctx context.Context, id string, body string) (*mode
 	if err != nil {
 		return nil, AuthErr
 	}
-	quote, err := a.quoteRepo.QuoteByID(id)
+	quote, err := a.Repo.QuoteByID(id)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -85,7 +85,7 @@ func (a *Auth) EditQuoteBody(ctx context.Context, id string, body string) (*mode
 		return nil, AuthErr
 	}
 	quote.Body = body
-	_, err = a.quoteRepo.UpdateQuote(quote)
+	_, err = a.Repo.UpdateQuote(quote)
 
 	log.Info("Quote body updated")
 	return quote, nil
@@ -98,7 +98,7 @@ func (a *Auth) EditQuoteAuthor(ctx context.Context, id string, name string) (*mo
 		return nil, AuthErr
 	}
 
-	quote, err := a.quoteRepo.QuoteByID(id)
+	quote, err := a.Repo.QuoteByID(id)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -107,7 +107,7 @@ func (a *Auth) EditQuoteAuthor(ctx context.Context, id string, name string) (*mo
 		return nil, AuthErr
 	}
 
-	author, err := a.authorRepo.AuthorByID(quote.AuthorID)
+	author, err := a.Repo.AuthorByID(quote.AuthorID)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -116,7 +116,7 @@ func (a *Auth) EditQuoteAuthor(ctx context.Context, id string, name string) (*mo
 		return nil, AuthErr
 	}
 	author.Name = name
-	_, err = a.authorRepo.UpdateAuthor(author)
+	_, err = a.Repo.UpdateAuthor(author)
 
 	log.Info("Quote author name updated")
 
@@ -129,7 +129,7 @@ func (a *Auth) EditQuoteSubject(ctx context.Context, id string, subject string) 
 	if err != nil {
 		return nil, AuthErr
 	}
-	quote, err := a.quoteRepo.QuoteByID(id)
+	quote, err := a.Repo.QuoteByID(id)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -138,7 +138,7 @@ func (a *Auth) EditQuoteSubject(ctx context.Context, id string, subject string) 
 		return nil, AuthErr
 	}
 	quote.Subject = &subject
-	_, err = a.quoteRepo.UpdateQuote(quote)
+	_, err = a.Repo.UpdateQuote(quote)
 
 	log.Info("Quote subject updated")
 	return quote, nil
@@ -150,7 +150,7 @@ func (a *Auth) EditQuoteDateOf(ctx context.Context, id string, dateOf string) (*
 	if err != nil {
 		return nil, AuthErr
 	}
-	quote, err := a.quoteRepo.QuoteByID(id)
+	quote, err := a.Repo.QuoteByID(id)
 	if err != nil {
 		return nil, GenericErr
 	}
@@ -166,7 +166,7 @@ func (a *Auth) EditQuoteDateOf(ctx context.Context, id string, dateOf string) (*
 	}
 
 	quote.DateOf = &t
-	_, err = a.quoteRepo.UpdateQuote(quote)
+	_, err = a.Repo.UpdateQuote(quote)
 
 	log.Info("Quote dateOf updated")
 	return quote, nil
