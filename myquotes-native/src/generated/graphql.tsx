@@ -12,10 +12,46 @@ export type Scalars = {
   Time: any;
 };
 
-export type AuthPayload = {
-  __typename?: 'AuthPayload';
-  authToken: AuthToken;
-  user: User;
+export type LoginInput = {
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type AuthorCreateInput = {
+  name: Scalars['String'];
+  DOD: Scalars['Time'];
+  DOB: Scalars['Time'];
+};
+
+
+export type QuoteFilter = {
+  authorId?: Maybe<Scalars['ID']>;
+  userId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type QuoteCreateInput = {
+  body: Scalars['String'];
+  authorId: Scalars['ID'];
+  dateOf: Scalars['Time'];
+  subject: Scalars['String'];
+};
+
+export type AuthToken = {
+  __typename?: 'AuthToken';
+  accessToken: Scalars['String'];
+  expiredAt: Scalars['Time'];
+};
+
+export type AuthorFilter = {
+  name?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type EditAuthor = {
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
 };
 
 export type RegisterInput = {
@@ -23,6 +59,54 @@ export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   confirmPassword: Scalars['String'];
+};
+
+export type EditQuote = {
+  id: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['String']>;
+  dateOf?: Maybe<Scalars['Time']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  user: User;
+  users: Array<User>;
+  quote: Quote;
+  quotes: Array<Quote>;
+  author: Author;
+  authors: Array<Author>;
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryUsersArgs = {
+  filter?: Maybe<UserFilter>;
+};
+
+
+export type QueryQuoteArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryQuotesArgs = {
+  filter?: Maybe<QuoteFilter>;
+};
+
+
+export type QueryAuthorArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryAuthorsArgs = {
+  filter?: Maybe<AuthorFilter>;
 };
 
 export type Mutation = {
@@ -109,7 +193,6 @@ export type MutationEditAuthorDodArgs = {
   DOD: Scalars['Time'];
 };
 
-
 export type Quote = {
   __typename?: 'Quote';
   id: Scalars['ID'];
@@ -120,26 +203,6 @@ export type Quote = {
   user: User;
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
-};
-
-export type AuthToken = {
-  __typename?: 'AuthToken';
-  accessToken: Scalars['String'];
-  expiredAt: Scalars['Time'];
-};
-
-export type EditQuote = {
-  id: Scalars['ID'];
-  body?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
-  dateOf?: Maybe<Scalars['Time']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type EditAuthor = {
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  subject?: Maybe<Scalars['String']>;
 };
 
 export type Author = {
@@ -155,79 +218,6 @@ export type Author = {
   updatedAt: Scalars['Time'];
 };
 
-export type LoginInput = {
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  user: User;
-  users: Array<User>;
-  quote: Quote;
-  quotes: Array<Quote>;
-  author: Author;
-  authors: Array<Author>;
-};
-
-
-export type QueryUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryUsersArgs = {
-  filter?: Maybe<UserFilter>;
-};
-
-
-export type QueryQuoteArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryQuotesArgs = {
-  filter?: Maybe<QuoteFilter>;
-};
-
-
-export type QueryAuthorArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryAuthorsArgs = {
-  filter?: Maybe<AuthorFilter>;
-};
-
-export type AuthorFilter = {
-  name?: Maybe<Scalars['String']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type QuoteCreateInput = {
-  body: Scalars['String'];
-  authorId: Scalars['ID'];
-  dateOf: Scalars['Time'];
-  subject: Scalars['String'];
-};
-
-export type UserFilter = {
-  username?: Maybe<Scalars['String']>;
-};
-
-export type QuoteFilter = {
-  authorId?: Maybe<Scalars['ID']>;
-  userId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type AuthorCreateInput = {
-  name: Scalars['String'];
-  DOD: Scalars['Time'];
-  DOB: Scalars['Time'];
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -237,6 +227,16 @@ export type User = {
   isLoggedIn: Scalars['Boolean'];
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
+};
+
+export type UserFilter = {
+  username?: Maybe<Scalars['String']>;
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  authToken: AuthToken;
+  user: User;
 };
 
 export type LoginUserMutationVariables = Exact<{

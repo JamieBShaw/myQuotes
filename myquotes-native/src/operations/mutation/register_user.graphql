@@ -1,5 +1,5 @@
 mutation RegisterUser($input: RegisterInput!) {
-  registerUser(input: $input)  {
+  registerUser(input: $input) {
     authToken {
       accessToken
       expiredAt
@@ -12,8 +12,3 @@ mutation RegisterUser($input: RegisterInput!) {
     }
   }
 }
-
-
-
-
-

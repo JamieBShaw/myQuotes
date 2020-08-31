@@ -1,9 +1,6 @@
 overwrite: true
 schema: "http://localhost:8080/query"
 documents: "./src/operations/**/*.graphql"
-hooks:
-  afterOneFileWrite:
-    - npx --prettier --write
 generates:
   src/generated/graphql.tsx:
     plugins:

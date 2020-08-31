@@ -1,9 +1,12 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
+  input: {
+    color: "green",
     backgroundColor: "white",
-    padding: 50,
-    justifyContent: "center",
+    fontWeight: "normal",
+    fontSize: 18,
+    height: 40,
+    textAlign: "center",
   },
 });

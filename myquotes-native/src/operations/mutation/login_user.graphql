@@ -1,5 +1,5 @@
 mutation LoginUser($input: LoginInput!) {
-  loginUser(input: $input)  {
+  loginUser(input: $input) {
     authToken {
       accessToken
       expiredAt
