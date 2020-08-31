@@ -1,0 +1,14 @@
+mutation LoginUser($input: LoginInput!) {
+  loginUser(input: $input)  {
+    authToken {
+      accessToken
+      expiredAt
+    }
+    user {
+      id
+      username
+      email
+      password
+    }
+  }
+}
