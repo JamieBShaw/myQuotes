@@ -13,6 +13,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/vektah/dataloaden v0.3.0 // indirect
+	github.com/vektah/gqlparser v1.3.1
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 )

@@ -1,15 +1,17 @@
-import { DefaultTheme } from "@react-navigation/native";
-
-export const MyQuotesTheme = {
-  ...DefaultTheme,
+export const Theme = {
   colors: {
-    ...DefaultTheme.colors,
     primary: "rgba(196, 196, 196, 0.5)",
     secondary: "grey",
     textPrimary: "black",
     textSecondary: "#006400",
+    buttonPrimary: "#C4C4C4",
+    buttonSecondary: "",
     background: "white",
     border: "black",
     error: "red",
+  },
+  font: {
+    primary: "Philosopher_400Regular",
+    size: 18,
   },
 };

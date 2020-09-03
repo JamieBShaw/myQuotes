@@ -12,6 +12,11 @@ type Auth struct {
 	Repo model.Repository
 }
 
+
+
+
+
+
 // Literally don't need this interface, the generated.mutationResolver interface implements all these methods
 // Why does it implement all these methods that require auth you ask? Well there all mutations and changing data
 // In my application requires authentication and context of the user who is mutating that data so obvvvvvviously
@@ -31,9 +36,12 @@ func NewAuth(repo model.Repository) *Auth {
 }
 
 var (
-	GenericErr = errors.New("Something went wrong")
-	AuthErr    = errors.New("User not authenticated")
-	InputErr   = errors.New("Input error")
+	GenericErr       = errors.New("Something went wrong")
+	AuthErr          = errors.New("User not authenticated")
+	InputErr         = errors.New("Input error")
+	EmailErr         = errors.New("Email already in use")
+	UsernameErr      = errors.New("Username already in use")
+	LoginCredentials = errors.New("Could not find user with those credentials")
 )
 
 // DO NOT TOUCH: Context struct is the same used in auth_middleware, must match!!

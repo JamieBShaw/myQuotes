@@ -40,6 +40,7 @@ type ResolverRoot interface {
 	Mutation() MutationResolver
 	Query() QueryResolver
 	Quote() QuoteResolver
+	User() UserResolver
 }
 
 type DirectiveRoot struct {
@@ -69,18 +70,22 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateAuthor      func(childComplexity int, input model.AuthorCreateInput) int
-		CreateQuote       func(childComplexity int, input model.QuoteCreateInput) int
-		EditAuthorDob     func(childComplexity int, id string, dob time.Time) int
-		EditAuthorDod     func(childComplexity int, id string, dod time.Time) int
-		EditAuthorName    func(childComplexity int, id string, name string) int
-		EditAuthorSubject func(childComplexity int, id string, subject string) int
-		EditQuoteAuthor   func(childComplexity int, id string, name string) int
-		EditQuoteBody     func(childComplexity int, id string, body string) int
-		EditQuoteDateOf   func(childComplexity int, id string, dateOf string) int
-		EditQuoteSubject  func(childComplexity int, id string, subject string) int
-		LoginUser         func(childComplexity int, input model.LoginInput) int
-		RegisterUser      func(childComplexity int, input model.RegisterInput) int
+		AddAuthorToFavourites      func(childComplexity int, id string) int
+		AddQuoteToFavourites       func(childComplexity int, id string) int
+		CreateAuthor               func(childComplexity int, input model.AuthorCreateInput) int
+		CreateQuote                func(childComplexity int, input model.QuoteCreateInput) int
+		EditAuthorDob              func(childComplexity int, id string, dob time.Time) int
+		EditAuthorDod              func(childComplexity int, id string, dod time.Time) int
+		EditAuthorName             func(childComplexity int, id string, name string) int
+		EditAuthorSubject          func(childComplexity int, id string, subject string) int
+		EditQuoteAuthor            func(childComplexity int, id string, name string) int
+		EditQuoteBody              func(childComplexity int, id string, body string) int
+		EditQuoteDateOf            func(childComplexity int, id string, dateOf string) int
+		EditQuoteSubject           func(childComplexity int, id string, subject string) int
+		LoginUser                  func(childComplexity int, input model.LoginInput) int
+		RegisterUser               func(childComplexity int, input model.RegisterInput) int
+		RemoveAuthorFromFavourites func(childComplexity int, id string) int
+		RemoveQuoteFromFavourites  func(childComplexity int, id string) int
 	}
 
 	Query struct {
@@ -104,13 +109,15 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		CreatedAt  func(childComplexity int) int
-		Email      func(childComplexity int) int
-		ID         func(childComplexity int) int
-		IsLoggedIn func(childComplexity int) int
-		Password   func(childComplexity int) int
-		UpdatedAt  func(childComplexity int) int
-		Username   func(childComplexity int) int
+		CreatedAt        func(childComplexity int) int
+		Email            func(childComplexity int) int
+		FavouriteAuthors func(childComplexity int) int
+		FavouriteQuotes  func(childComplexity int) int
+		ID               func(childComplexity int) int
+		IsLoggedIn       func(childComplexity int) int
+		Password         func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		Username         func(childComplexity int) int
 	}
 }
 
@@ -133,6 +140,10 @@ type MutationResolver interface {
 	EditAuthorSubject(ctx context.Context, id string, subject string) (*model.Author, error)
 	EditAuthorDob(ctx context.Context, id string, dob time.Time) (*model.Author, error)
 	EditAuthorDod(ctx context.Context, id string, dod time.Time) (*model.Author, error)
+	AddQuoteToFavourites(ctx context.Context, id string) ([]*model.Quote, error)
+	RemoveQuoteFromFavourites(ctx context.Context, id string) ([]*model.Quote, error)
+	AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error)
+	RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*model.Author, error)
 }
 type QueryResolver interface {
 	User(ctx context.Context, id string) (*model.User, error)
@@ -146,6 +157,10 @@ type QuoteResolver interface {
 	Author(ctx context.Context, obj *model.Quote) (*model.Author, error)
 
 	User(ctx context.Context, obj *model.Quote) (*model.User, error)
+}
+type UserResolver interface {
+	FavouriteQuotes(ctx context.Context, obj *model.User) ([]*model.Quote, error)
+	FavouriteAuthors(ctx context.Context, obj *model.User) ([]*model.Author, error)
 }
 
 type executableSchema struct {
@@ -253,6 +268,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Author.User(childComplexity), true
+
+	case "Mutation.addAuthorToFavourites":
+		if e.complexity.Mutation.AddAuthorToFavourites == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addAuthorToFavourites_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddAuthorToFavourites(childComplexity, args["id"].(string)), true
+
+	case "Mutation.addQuoteToFavourites":
+		if e.complexity.Mutation.AddQuoteToFavourites == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuoteToFavourites_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuoteToFavourites(childComplexity, args["id"].(string)), true
 
 	case "Mutation.createAuthor":
 		if e.complexity.Mutation.CreateAuthor == nil {
@@ -398,6 +437,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterUser(childComplexity, args["input"].(model.RegisterInput)), true
 
+	case "Mutation.removeAuthorFromFavourites":
+		if e.complexity.Mutation.RemoveAuthorFromFavourites == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeAuthorFromFavourites_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveAuthorFromFavourites(childComplexity, args["id"].(string)), true
+
+	case "Mutation.removeQuoteFromFavourites":
+		if e.complexity.Mutation.RemoveQuoteFromFavourites == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeQuoteFromFavourites_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveQuoteFromFavourites(childComplexity, args["id"].(string)), true
+
 	case "Query.author":
 		if e.complexity.Query.Author == nil {
 			break
@@ -540,6 +603,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Email(childComplexity), true
 
+	case "User.favouriteAuthors":
+		if e.complexity.User.FavouriteAuthors == nil {
+			break
+		}
+
+		return e.complexity.User.FavouriteAuthors(childComplexity), true
+
+	case "User.favouriteQuotes":
+		if e.complexity.User.FavouriteQuotes == nil {
+			break
+		}
+
+		return e.complexity.User.FavouriteQuotes(childComplexity), true
+
 	case "User.id":
 		if e.complexity.User.ID == nil {
 			break
@@ -639,7 +716,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "graphql/schema.graphqls", Input: `# GraphQL schema example
+	&ast.Source{Name: "graphql/schema.graphql", Input: `# GraphQL schema example
 
 scalar Time
 
@@ -672,9 +749,13 @@ type User {
   email: String!
   password: String!
   isLoggedIn: Boolean!
+  favouriteQuotes: [Quote]
+  favouriteAuthors: [Author]
   createdAt: Time!
   updatedAt: Time!
 }
+
+
 
 type AuthToken {
   accessToken: String!
@@ -697,7 +778,7 @@ input AuthorFilter {
 
 input QuoteFilter {
   authorId: ID
-  userId: ID
+  createdId: ID
   subject: String
 }
 
@@ -773,6 +854,12 @@ type Mutation {
   # TODO: Begin implementing upvote/ like functionality for quotes and authors
 
   # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
+
+  addQuoteToFavourites(id: ID!): [Quote]!
+  removeQuoteFromFavourites(id: ID!): [Quote]!
+
+  addAuthorToFavourites(id: ID!): [Author]!
+  removeAuthorFromFavourites(id: ID!): [Author]!
 }
 `, BuiltIn: false},
 }
@@ -781,6 +868,34 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_addAuthorToFavourites_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addQuoteToFavourites_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createAuthor_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1011,6 +1126,34 @@ func (ec *executionContext) field_Mutation_registerUser_args(ctx context.Context
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeAuthorFromFavourites_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeQuoteFromFavourites_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -2079,6 +2222,170 @@ func (ec *executionContext) _Mutation_editAuthorDOD(ctx context.Context, field g
 	return ec.marshalNAuthor2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_addQuoteToFavourites(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addQuoteToFavourites_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddQuoteToFavourites(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Quote)
+	fc.Result = res
+	return ec.marshalNQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_removeQuoteFromFavourites(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_removeQuoteFromFavourites_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveQuoteFromFavourites(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Quote)
+	fc.Result = res
+	return ec.marshalNQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addAuthorToFavourites(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addAuthorToFavourites_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddAuthorToFavourites(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Author)
+	fc.Result = res
+	return ec.marshalNAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_removeAuthorFromFavourites(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_removeAuthorFromFavourites_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveAuthorFromFavourites(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Author)
+	fc.Result = res
+	return ec.marshalNAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2828,6 +3135,68 @@ func (ec *executionContext) _User_isLoggedIn(ctx context.Context, field graphql.
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_favouriteQuotes(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().FavouriteQuotes(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Quote)
+	fc.Result = res
+	return ec.marshalOQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_favouriteAuthors(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().FavouriteAuthors(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Author)
+	fc.Result = res
+	return ec.marshalOAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -4151,9 +4520,9 @@ func (ec *executionContext) unmarshalInputQuoteFilter(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "userId":
+		case "createdId":
 			var err error
-			it.UserID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			it.CreatedID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4461,6 +4830,26 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "addQuoteToFavourites":
+			out.Values[i] = ec._Mutation_addQuoteToFavourites(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "removeQuoteFromFavourites":
+			out.Values[i] = ec._Mutation_removeQuoteFromFavourites(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "addAuthorToFavourites":
+			out.Values[i] = ec._Mutation_addAuthorToFavourites(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "removeAuthorFromFavourites":
+			out.Values[i] = ec._Mutation_removeAuthorFromFavourites(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4674,37 +5063,59 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		case "id":
 			out.Values[i] = ec._User_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "username":
 			out.Values[i] = ec._User_username(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "email":
 			out.Values[i] = ec._User_email(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "password":
 			out.Values[i] = ec._User_password(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "isLoggedIn":
 			out.Values[i] = ec._User_isLoggedIn(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
+		case "favouriteQuotes":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_favouriteQuotes(ctx, field, obj)
+				return res
+			})
+		case "favouriteAuthors":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_favouriteAuthors(ctx, field, obj)
+				return res
+			})
 		case "createdAt":
 			out.Values[i] = ec._User_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "updatedAt":
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -4994,6 +5405,43 @@ func (ec *executionContext) marshalNAuthor2githubᚗcomᚋJamieBShawᚋmyquotes�
 	return ec._Author(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx context.Context, sel ast.SelectionSet, v []*model.Author) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAuthor2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalNAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Author) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -5079,6 +5527,43 @@ func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋJamieBShawᚋmyq
 
 func (ec *executionContext) marshalNQuote2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v model.Quote) graphql.Marshaler {
 	return ec._Quote(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v []*model.Quote) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOQuote2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) marshalNQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuoteᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Quote) graphql.Marshaler {
@@ -5441,6 +5926,57 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) marshalOAuthor2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx context.Context, sel ast.SelectionSet, v model.Author) graphql.Marshaler {
+	return ec._Author(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOAuthor2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx context.Context, sel ast.SelectionSet, v []*model.Author) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAuthor2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOAuthor2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthor(ctx context.Context, sel ast.SelectionSet, v *model.Author) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Author(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOAuthorFilter2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthorFilter(ctx context.Context, v interface{}) (model.AuthorFilter, error) {
 	return ec.unmarshalInputAuthorFilter(ctx, v)
 }
@@ -5497,6 +6033,57 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	return ec.marshalOID2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOQuote2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v model.Quote) graphql.Marshaler {
+	return ec._Quote(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOQuote2ᚕᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v []*model.Quote) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOQuote2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOQuote2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v *model.Quote) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Quote(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOQuoteFilter2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuoteFilter(ctx context.Context, v interface{}) (model.QuoteFilter, error) {

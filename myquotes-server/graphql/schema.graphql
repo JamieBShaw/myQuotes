@@ -31,9 +31,20 @@ type User {
   email: String!
   password: String!
   isLoggedIn: Boolean!
+  favouriteQuotes: [Quote]
+  favouriteAuthors: [Author]
   createdAt: Time!
   updatedAt: Time!
 }
+
+
+#type Favourites {
+#  id: ID!
+#  user: User!
+#  itemType: Boolean!
+#  item_quote_id: String
+#  item_author_id: String
+#}
 
 type AuthToken {
   accessToken: String!
@@ -56,7 +67,7 @@ input AuthorFilter {
 
 input QuoteFilter {
   authorId: ID
-  userId: ID
+  createdId: ID
   subject: String
 }
 
@@ -132,4 +143,10 @@ type Mutation {
   # TODO: Begin implementing upvote/ like functionality for quotes and authors
 
   # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
+
+  addQuoteToFavourites(id: ID!): [Quote]!
+  removeQuoteFromFavourites(id: ID!): [Quote]!
+
+  addAuthorToFavourites(id: ID!): [Author]!
+  removeAuthorFromFavourites(id: ID!): [Author]!
 }

@@ -11,7 +11,8 @@ type Author struct {
 	Name      string    `json:"name" validate:"required,max=42,min=2"`
 	Dob       time.Time `json:"dob"`
 	Dod       time.Time `json:"dod"`
-	UserID    string    `json:"userID" validate:"required"`
+	UserID    string    `json:"userID"`
+	CreatedID string    `json:"createdID" validate:"required"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }

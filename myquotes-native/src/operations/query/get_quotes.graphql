@@ -1,0 +1,10 @@
+query GetQuotes {
+  quotes(filter: {}) {
+    id
+    body
+    author {
+      id
+      name
+    }
+  }
+}

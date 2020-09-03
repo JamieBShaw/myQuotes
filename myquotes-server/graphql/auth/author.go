@@ -73,7 +73,7 @@ func (a *Auth) EditAuthorName(ctx context.Context, id string, name string) (*mod
 		return nil, GenericErr
 	}
 
-	if author.UserID != user.ID {
+	if author.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 	author.Name = name
@@ -101,7 +101,7 @@ func (a *Auth) EditAuthorDob(ctx context.Context, id string, dob time.Time) (*mo
 		return nil, GenericErr
 	}
 
-	if author.UserID != user.ID {
+	if author.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 	author.Dob = dob
@@ -123,7 +123,7 @@ func (a *Auth) EditAuthorDod(ctx context.Context, id string, dod time.Time) (*mo
 		return nil, GenericErr
 	}
 
-	if author.UserID != user.ID {
+	if author.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 	author.Dod = dod
@@ -133,3 +133,26 @@ func (a *Auth) EditAuthorDod(ctx context.Context, id string, dod time.Time) (*mo
 	log.Info("Author DOD successfully updated")
 	return author, nil
 }
+
+
+func (a *Auth) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
+	_, err := getUserFromCtx(ctx)
+	if err != nil {
+		return nil, AuthErr
+	}
+	_, err = a.Repo.AuthorByID(id)
+	if err != nil {
+		return nil, GenericErr
+	}
+
+	return nil, nil
+
+
+}
+
+
+func (a *Auth) RemoveAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
+	return nil, nil
+}
+
+

@@ -6,34 +6,40 @@ import {
   View,
   Text,
   StyleSheet,
+  ButtonProps,
 } from "react-native";
+import { Theme } from "../../../theme";
 
-interface Props {
+interface Props extends Partial<ButtonProps> {
   text: string;
   onPress: (en: NativeSyntheticEvent<NativeTouchEvent>) => void;
 }
 
-export const AppButton = ({ text, onPress }: Props) => {
+export const AppButton: React.FC<Props> = (props) => {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.button}>
-        <Text style={styles.text}>{text}</Text>
-      </View>
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity {...props} onPress={props.onPress}>
+        <View style={styles.button}>
+          <Text style={styles.text}>{props.text}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "green",
-    borderColor: "black",
-    borderWidth: 1,
+    backgroundColor: Theme.colors.buttonPrimary,
+    width: "60%",
+    alignSelf: "center",
+    height: 48,
   },
 
   text: {
-    color: "white",
-    fontWeight: "normal",
-    fontSize: 18,
+    padding: 5,
     textAlign: "center",
+    fontFamily: Theme.font.primary,
+    fontStyle: "italic",
+    fontSize: Theme.font.size + 6,
   },
 });

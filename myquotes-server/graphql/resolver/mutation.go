@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/JamieBShaw/myquotes-server/graphql/generated"
@@ -13,14 +14,40 @@ type mutationResolver struct{ *Resolver }
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
-func (r *mutationResolver) RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error) {
-	return r.Auth.RegisterUser(ctx, input)
+func (r *mutationResolver) AddQuoteToFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
+	return r.Auth.AddQuoteToFavourites(ctx, id)
+}
 
+func (r *mutationResolver) RemoveQuoteFromFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
+	return r.Auth.RemoveQuoteToFavourites(ctx, id)
+}
+
+func (r *mutationResolver) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
+
+	return r.Auth.AddAuthorToFavourites(ctx, id)
+}
+
+func (r *mutationResolver) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*model.Author, error) {
+	return r.Auth.RemoveAuthorToFavourites(ctx, id)
+}
+
+func (r *mutationResolver) RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error) {
+	isValid := validation(ctx, input)
+	if !isValid {
+		return nil, errors.New("Input errors")
+	}
+
+	return r.Auth.RegisterUser(ctx, input)
 }
 func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
-	return r.Auth.LoginUser(ctx, &input)
+	isValid := validation(ctx, input)
+	if !isValid {
+		return nil, errors.New("Input errors")
+	}
 
+	return r.Auth.LoginUser(ctx, &input)
 }
+
 func (r *mutationResolver) CreateQuote(ctx context.Context, input model.QuoteCreateInput) (*model.Quote, error) {
 	return r.Auth.CreateQuote(ctx, input)
 }

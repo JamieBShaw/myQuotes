@@ -7,6 +7,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 	log "github.com/sirupsen/logrus"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error) {
@@ -17,13 +18,14 @@ func (a *Auth) RegisterUser(ctx context.Context, input model.RegisterInput) (*mo
 
 	_, err := a.Repo.ByField("email", input.Email)
 	if err == nil {
-		graphql.AddErrorf(ctx, "Email %q already in use", input.Email)
+		graphqlAddErrF(ctx, EmailErr.Error(), "email")
+
 		return nil, err
 	}
 
 	_, err = a.Repo.ByField("username", input.Username)
 	if err == nil {
-		graphql.AddErrorf(ctx, "Username %q already in use", input.Username)
+		graphqlAddErrF(ctx, UsernameErr.Error(), "username")
 		return nil, err
 	}
 
@@ -63,19 +65,20 @@ func (a *Auth) LoginUser(ctx context.Context, input *model.LoginInput) (*model.A
 
 	user, err := a.Repo.ByFieldOrField("email", input.UsernameOrEmail, "username", input.UsernameOrEmail)
 	if err != nil {
-		graphql.AddErrorf(ctx, "Could not find user with those details")
-		return nil, err
+
+		graphqlAddErrF(ctx, LoginCredentials.Error(), "usernameOrEmail")
+		return nil, nil
 	}
 
 	err = user.ValidatePassword(input.Password)
 	if err != nil {
-		graphql.AddErrorf(ctx, "The email or password is incorrect")
-		return nil, err
+		graphqlAddErrF(ctx, LoginCredentials.Error(), "password")
+		return nil, nil
 	}
 
 	err = user.Validate()
 	if err != nil {
-		graphql.AddErrorf(ctx, "The email or password is incorrect")
+		graphqlAddErrF(ctx, LoginCredentials.Error(), "password")
 		return nil, InputErr
 	}
 
@@ -91,4 +94,28 @@ func (a *Auth) LoginUser(ctx context.Context, input *model.LoginInput) (*model.A
 		AuthToken: token,
 		User:      user,
 	}, nil
+}
+
+
+func (a *Auth) FavQuotesOfUser(ctx context.Context, user *model.User) ([]*model.Quote, error) {
+
+
+	_, err := a.Repo.GetUsersFavouriteQuotes(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (a *Auth) FavAuthorsOfUser(ctx context.Context, user *model.User) ([]*model.Author, error) {
+	return nil, nil
+}
+
+func graphqlAddErrF(ctx context.Context, message, field string) {
+	graphql.AddError(ctx, &gqlerror.Error{
+		Message: message,
+		Extensions: map[string]interface{}{
+			"field": field,
+		},
+	})
 }

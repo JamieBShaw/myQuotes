@@ -17,7 +17,7 @@ func (q *quoteResolver) Author(ctx context.Context, quote *model.Quote) (*model.
 	return q.Auth.Repo.AuthorByQuote(quote)
 }
 
-// Returns the User where the User.ID == Quote.user_id
+// Returns the User where the User.ID == Quote.creator_id
 func (q *quoteResolver) User(ctx context.Context, quote *model.Quote) (*model.User, error) {
 	return q.Auth.Repo.ByQuote(quote)
 }

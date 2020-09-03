@@ -63,7 +63,8 @@ func main() {
 		AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
 			"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
 			"http://localhost:19006/", "http://192.168.0.189:19006/",
-			"http://localhost:19006"},
+			"http://localhost:19006", "http://192.168.0.189:19001",
+			"exp://192.168.0.189:19000"},
 
 		AllowCredentials: true,
 		Debug:            true,

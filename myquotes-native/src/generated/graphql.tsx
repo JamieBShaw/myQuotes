@@ -12,29 +12,18 @@ export type Scalars = {
   Time: any;
 };
 
-export type LoginInput = {
-  usernameOrEmail: Scalars['String'];
+export type RegisterInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
   password: Scalars['String'];
-};
-
-export type AuthorCreateInput = {
-  name: Scalars['String'];
-  DOD: Scalars['Time'];
-  DOB: Scalars['Time'];
+  confirmPassword: Scalars['String'];
 };
 
 
-export type QuoteFilter = {
-  authorId?: Maybe<Scalars['ID']>;
-  userId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type QuoteCreateInput = {
-  body: Scalars['String'];
-  authorId: Scalars['ID'];
-  dateOf: Scalars['Time'];
-  subject: Scalars['String'];
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  authToken: AuthToken;
+  user: User;
 };
 
 export type AuthToken = {
@@ -48,25 +37,23 @@ export type AuthorFilter = {
   subject?: Maybe<Scalars['String']>;
 };
 
-export type EditAuthor = {
+export type Quote = {
+  __typename?: 'Quote';
   id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type RegisterInput = {
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-};
-
-export type EditQuote = {
-  id: Scalars['ID'];
-  body?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
+  body: Scalars['String'];
+  author: Author;
   dateOf?: Maybe<Scalars['Time']>;
   subject?: Maybe<Scalars['String']>;
+  user: User;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
+
+export type QuoteCreateInput = {
+  body: Scalars['String'];
+  authorId: Scalars['ID'];
+  dateOf: Scalars['Time'];
+  subject: Scalars['String'];
 };
 
 export type Query = {
@@ -107,6 +94,50 @@ export type QueryAuthorArgs = {
 
 export type QueryAuthorsArgs = {
   filter?: Maybe<AuthorFilter>;
+};
+
+export type AuthorCreateInput = {
+  name: Scalars['String'];
+  DOD: Scalars['Time'];
+  DOB: Scalars['Time'];
+};
+
+export type EditAuthor = {
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type Author = {
+  __typename?: 'Author';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  subject?: Maybe<Scalars['String']>;
+  DOB: Scalars['Time'];
+  DOD: Scalars['Time'];
+  quotes: Array<Quote>;
+  user: User;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
+
+export type QuoteFilter = {
+  authorId?: Maybe<Scalars['ID']>;
+  userId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type EditQuote = {
+  id: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['String']>;
+  dateOf?: Maybe<Scalars['Time']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type LoginInput = {
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Mutation = {
@@ -193,31 +224,6 @@ export type MutationEditAuthorDodArgs = {
   DOD: Scalars['Time'];
 };
 
-export type Quote = {
-  __typename?: 'Quote';
-  id: Scalars['ID'];
-  body: Scalars['String'];
-  author: Author;
-  dateOf?: Maybe<Scalars['Time']>;
-  subject?: Maybe<Scalars['String']>;
-  user: User;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
-};
-
-export type Author = {
-  __typename?: 'Author';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  subject?: Maybe<Scalars['String']>;
-  DOB: Scalars['Time'];
-  DOD: Scalars['Time'];
-  quotes: Array<Quote>;
-  user: User;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -231,12 +237,6 @@ export type User = {
 
 export type UserFilter = {
   username?: Maybe<Scalars['String']>;
-};
-
-export type AuthPayload = {
-  __typename?: 'AuthPayload';
-  authToken: AuthToken;
-  user: User;
 };
 
 export type LoginUserMutationVariables = Exact<{
@@ -275,6 +275,21 @@ export type RegisterUserMutation = (
       & Pick<User, 'id' | 'username' | 'email' | 'password'>
     ) }
   ) }
+);
+
+export type GetQuotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetQuotesQuery = (
+  { __typename?: 'Query' }
+  & { quotes: Array<(
+    { __typename?: 'Quote' }
+    & Pick<Quote, 'id' | 'body'>
+    & { author: (
+      { __typename?: 'Author' }
+      & Pick<Author, 'id' | 'name'>
+    ) }
+  )> }
 );
 
 export type GetUserQueryVariables = Exact<{
@@ -373,6 +388,43 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const GetQuotesDocument = gql`
+    query GetQuotes {
+  quotes(filter: {}) {
+    id
+    body
+    author {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetQuotesQuery__
+ *
+ * To run a query within a React component, call `useGetQuotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetQuotesQuery(baseOptions?: Apollo.QueryHookOptions<GetQuotesQuery, GetQuotesQueryVariables>) {
+        return Apollo.useQuery<GetQuotesQuery, GetQuotesQueryVariables>(GetQuotesDocument, baseOptions);
+      }
+export function useGetQuotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuotesQuery, GetQuotesQueryVariables>) {
+          return Apollo.useLazyQuery<GetQuotesQuery, GetQuotesQueryVariables>(GetQuotesDocument, baseOptions);
+        }
+export type GetQuotesQueryHookResult = ReturnType<typeof useGetQuotesQuery>;
+export type GetQuotesLazyQueryHookResult = ReturnType<typeof useGetQuotesLazyQuery>;
+export type GetQuotesQueryResult = Apollo.QueryResult<GetQuotesQuery, GetQuotesQueryVariables>;
 export const GetUserDocument = gql`
     query GetUser($id: ID!) {
   user(id: $id) {

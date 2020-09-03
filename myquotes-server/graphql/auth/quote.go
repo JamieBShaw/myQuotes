@@ -20,7 +20,7 @@ func (a *Auth) CreateQuote(ctx context.Context, input model.QuoteCreateInput) (*
 		Body:     input.Body,
 		Subject:  &input.Subject,
 		DateOf:   &input.DateOf,
-		UserID:   user.ID,
+		CreatedID:   user.ID,
 	}
 
 	// Will return the slice of quotes of the author we just inserted a quote for
@@ -47,7 +47,7 @@ func (a *Auth) EditQuote(ctx context.Context, input model.EditQuote) (*model.Quo
 	}
 
 	// Check if user in ctx is the owner of the quote.user_id
-	if quoteInDB.UserID != user.ID {
+	if quoteInDB.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 
@@ -56,7 +56,7 @@ func (a *Auth) EditQuote(ctx context.Context, input model.EditQuote) (*model.Quo
 		Body:    *input.Body,
 		Subject: input.Subject,
 		DateOf:  input.DateOf,
-		UserID:  user.ID,
+		CreatedID:  user.ID,
 	}
 
 	_, err = a.Repo.UpdateQuote(quote)
@@ -81,7 +81,7 @@ func (a *Auth) EditQuoteBody(ctx context.Context, id string, body string) (*mode
 		return nil, GenericErr
 	}
 
-	if quote.UserID != user.ID {
+	if quote.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 	quote.Body = body
@@ -103,7 +103,7 @@ func (a *Auth) EditQuoteAuthor(ctx context.Context, id string, name string) (*mo
 		return nil, GenericErr
 	}
 
-	if quote.UserID != user.ID {
+	if quote.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 
@@ -112,7 +112,7 @@ func (a *Auth) EditQuoteAuthor(ctx context.Context, id string, name string) (*mo
 		return nil, GenericErr
 	}
 
-	if quote.AuthorID != author.ID && quote.UserID != author.UserID {
+	if quote.AuthorID != author.ID && quote.CreatedID != author.UserID {
 		return nil, AuthErr
 	}
 	author.Name = name
@@ -134,7 +134,7 @@ func (a *Auth) EditQuoteSubject(ctx context.Context, id string, subject string) 
 		return nil, GenericErr
 	}
 
-	if quote.UserID != user.ID {
+	if quote.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 	quote.Subject = &subject
@@ -155,7 +155,7 @@ func (a *Auth) EditQuoteDateOf(ctx context.Context, id string, dateOf string) (*
 		return nil, GenericErr
 	}
 
-	if quote.UserID != user.ID {
+	if quote.CreatedID != user.ID {
 		return nil, AuthErr
 	}
 
@@ -171,3 +171,27 @@ func (a *Auth) EditQuoteDateOf(ctx context.Context, id string, dateOf string) (*
 	log.Info("Quote dateOf updated")
 	return quote, nil
 }
+
+func (a *Auth) AddQuoteToFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
+	log.Info("Beginning Adding quote to user favourites.............")
+	user, err := getUserFromCtx(ctx)
+	if err != nil {
+		return nil, AuthErr
+	}
+	quote, err := a.Repo.QuoteByID(id)
+	if err != nil {
+		return nil, GenericErr
+	}
+
+	log.Info("User's fav quotes BEFORE:  ", user.FavouriteQuotes)
+	user.FavouriteQuotes = append(user.FavouriteQuotes, quote)
+	log.Info("User's fav quotes after:  ", user.FavouriteQuotes)
+
+
+	return user.FavouriteQuotes, nil
+}
+
+func (a *Auth) RemoveQuoteToFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
+	return nil, nil
+}
+
