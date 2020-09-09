@@ -89,25 +89,25 @@ func (r *Repository) CreateUser(user *model.User) (*model.User, error) {
 }
 
 func (r *Repository) UserByAuthor(author *model.Author) (*model.User, error) {
-	log.Info(URepo, " Getting user by Author.user_id")
+	log.Info(URepo, " Getting user by Author.creator_id")
 	var user model.User
 
-	err := r.DB.Model(&user).Where("id = ?", author.UserID).First()
+	err := r.DB.Model(&user).Where("id = ?", author.CreatorID).First()
 	if err != nil {
-		log.Error("[DB] could not find user where author_id: ", author.UserID, "   ", err)
+		log.Error("[DB] could not find user where author_id: ", author.CreatorID, "   ", err)
 		return nil, err
 	}
 	return &user, nil
 }
 
 func (r *Repository) ByQuote(quote *model.Quote) (*model.User, error) {
-	log.Info(URepo, " Getting user by Quote.created_id")
+	log.Info(URepo, " Getting user by Quote.creator_id")
 
 	var user model.User
 
-	err := r.DB.Model(&user).Where("id = ?", quote.CreatedID).First()
+	err := r.DB.Model(&user).Where("id = ?", quote.CreatorID).First()
 	if err != nil {
-		log.Error("[DB] could not find user where author_id: ", quote.CreatedAt, "   ", err)
+		log.Error("[DB] could not find user where author_id: ", quote.CreatorID, "   ", err)
 		return nil, err
 	}
 	return &user, nil

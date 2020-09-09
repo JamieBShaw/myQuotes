@@ -15,7 +15,7 @@ func (r *Repository) GetQuotes(filter *model.QuoteFilter) ([]*model.Quote, error
 
 	var quotes []*model.Quote
 
-	query := r.DB.Model(&quotes)
+	query := r.DB.Model(&quotes).Order("id")
 
 	if filter != nil {
 		if filter.AuthorID != nil {

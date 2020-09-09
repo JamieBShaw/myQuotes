@@ -8,6 +8,7 @@ type Quote {
   author: Author!
   dateOf: Time
   subject: String
+  favCount: Int!
   user: User!
   createdAt: Time!
   updatedAt: Time!
@@ -19,6 +20,7 @@ type Author {
   subject: String
   DOB: Time!
   DOD: Time!
+  favCount: Int!
   quotes: [Quote!]!
   user: User!
   createdAt: Time!
@@ -62,13 +64,17 @@ input UserFilter {
 
 input AuthorFilter {
   name: String
+  creatorId: ID
   subject: String
+  favCount: Int
 }
 
 input QuoteFilter {
   authorId: ID
-  createdId: ID
+  creatorId: ID
   subject: String
+  favCount: Int
+  CreatedAt: Time
 }
 
 input RegisterInput {
@@ -119,6 +125,7 @@ type Query {
 
   author(id: ID!): Author!
   authors(filter: AuthorFilter): [Author!]!
+
 }
 
 type Mutation {
@@ -137,13 +144,7 @@ type Mutation {
   editAuthorSubject(id: ID!, subject: String!): Author!
   editAuthorDOB(id: ID!, DOB: Time!): Author!
   editAuthorDOD(id: ID!, DOD: Time!): Author!
-
-  # TODO: Begin implementing delete functionality
-
-  # TODO: Begin implementing upvote/ like functionality for quotes and authors
-
-  # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
-
+  
   addQuoteToFavourites(id: ID!): [Quote]!
   removeQuoteFromFavourites(id: ID!): [Quote]!
 

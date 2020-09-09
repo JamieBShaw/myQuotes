@@ -18,18 +18,16 @@ func TestUserValidation(t *testing.T) {
 }
 
 func TestRegisterInput(t *testing.T) {
-	regIn := &RegisterInput{
-		Email:           "james@mail.com",
-		Username:        "mrAnderson",
-		Password:        "password",
-		ConfirmPassword: "password",
-	}
-	err := regIn.Validate()
+	//regIn := &RegisterInput{
+	//	Email:           "james@mail.com",
+	//	Username:        "mrAnderson",
+	//	Password:        "password",
+	//	ConfirmPassword: "password",
+	//}
 
-	if err != nil {
-		t.Fatal(err)
+
 	}
-}
+
 
 func TestGenerateToken(t *testing.T) {
 	u := &User{

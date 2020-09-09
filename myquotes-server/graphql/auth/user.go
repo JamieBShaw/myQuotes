@@ -99,16 +99,24 @@ func (a *Auth) LoginUser(ctx context.Context, input *model.LoginInput) (*model.A
 
 func (a *Auth) FavQuotesOfUser(ctx context.Context, user *model.User) ([]*model.Quote, error) {
 
-
-	_, err := a.Repo.GetUsersFavouriteQuotes(user.ID)
+	quotes, err := a.Repo.GetUsersFavouriteQuotes(user.ID)
 	if err != nil {
+		graphqlAddErrF(ctx, FavQuoteErr.Error(), "favouriteQuotes")
 		return nil, err
 	}
-	return nil, nil
+
+	return quotes, nil
 }
 
 func (a *Auth) FavAuthorsOfUser(ctx context.Context, user *model.User) ([]*model.Author, error) {
-	return nil, nil
+
+	authors, err := a.Repo.GetUsersFavouriteAuthors(user.ID)
+	if err != nil {
+		graphqlAddErrF(ctx, FavAuthErr.Error(), "favouriteAuthors")
+		return nil, err
+	}
+	
+	return authors, nil
 }
 
 func graphqlAddErrF(ctx context.Context, message, field string) {

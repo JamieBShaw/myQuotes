@@ -3,7 +3,6 @@ import React from "react";
 import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "./ApolloProvider";
 import {
   useFonts,
   Philosopher_700Bold,
@@ -12,8 +11,8 @@ import {
   Philosopher_400Regular_Italic,
 } from "@expo-google-fonts/philosopher";
 import MainStackNavigator from "./src/navigation/MainStackNavigator";
-// @ts-ignore
-// import getEnvVars from "./enviroment";
+import { client } from "./ApolloProvider";
+import { AuthContextProvider } from "./src/context/auth";
 
 const App = () => {
   let [fontsLoaded] = useFonts({
@@ -24,17 +23,21 @@ const App = () => {
   });
 
   if (!fontsLoaded) {
+    console.log("loading fonts...");
     return (
       <View>
         <Text> Loading fonts..... </Text>
       </View>
     );
   }
+
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
-        <MainStackNavigator />
-      </NavigationContainer>
+      <AuthContextProvider>
+        <NavigationContainer>
+          <MainStackNavigator />
+        </NavigationContainer>
+      </AuthContextProvider>
     </ApolloProvider>
   );
 };

@@ -1,29 +1,25 @@
 import React from "react";
 
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { Header } from "../../components/Header";
+import { QuoteList } from "../../components/QuoteList";
 import { styles } from "./styles";
 import { useGetQuotesQuery } from "../../generated/graphql";
 
 const Home: React.FC = () => {
-  const { data, loading, error } = useGetQuotesQuery();
+  const { data, loading, refetch } = useGetQuotesQuery({
+    fetchPolicy: "no-cache",
+  });
 
-  if (loading) {
-    console.log("Loading");
-  }
-
-  if (error) {
-    console.log("ERROR:  ", error.message);
-  }
-
-  if (data) {
-    console.log("DATA:  ", data.quotes);
-  }
   return (
     <View style={styles.screen}>
-      <Header title="Home" />
+      <Header title="Home Test" />
       <View style={styles.mainContainer}>
-        <Text> Is where the heart is </Text>
+        <QuoteList
+          loading={loading}
+          quotesData={data?.quotes}
+          refetch={refetch}
+        />
       </View>
     </View>
   );

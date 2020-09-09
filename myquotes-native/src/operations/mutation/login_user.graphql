@@ -8,7 +8,31 @@ mutation LoginUser($input: LoginInput!) {
       id
       username
       email
-      password
+      isLoggedIn
+      favouriteQuotes {
+        id
+        body
+        favCount
+        author {
+          id
+        }
+        subject
+        createdAt
+        updatedAt
+      }
+      favouriteAuthors {
+        id
+        name
+        subject
+        quotes {
+          id
+        }
+        user {
+          id
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
 }

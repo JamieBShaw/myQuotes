@@ -1,3 +1,28 @@
+# mutation RegisterUser($input: RegisterInput!) {
+#   registerUser(input: $input) {
+#     authToken {
+#       accessToken
+#       expiredAt
+#     }
+#     user {
+#       id
+#       username
+#       email
+#       password
+#       favouriteQuotes {
+#         id
+#         body
+#         favCount
+#       }
+#       favouriteAuthors {
+#         id
+#         body
+#         favCount
+#       }
+#     }
+#   }
+# }
+
 mutation RegisterUser($input: RegisterInput!) {
   registerUser(input: $input) {
     authToken {
@@ -8,7 +33,31 @@ mutation RegisterUser($input: RegisterInput!) {
       id
       username
       email
-      password
+      isLoggedIn
+      favouriteQuotes {
+        id
+        body
+        favCount
+        author {
+          id
+        }
+        subject
+        createdAt
+        updatedAt
+      }
+      favouriteAuthors {
+        id
+        name
+        subject
+        quotes {
+          id
+        }
+        user {
+          id
+        }
+        createdAt
+        updatedAt
+      }
     }
   }
 }

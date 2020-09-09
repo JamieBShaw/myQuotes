@@ -17,6 +17,7 @@ type Auth struct {
 
 
 
+
 // Literally don't need this interface, the generated.mutationResolver interface implements all these methods
 // Why does it implement all these methods that require auth you ask? Well there all mutations and changing data
 // In my application requires authentication and context of the user who is mutating that data so obvvvvvviously
@@ -42,17 +43,19 @@ var (
 	EmailErr         = errors.New("Email already in use")
 	UsernameErr      = errors.New("Username already in use")
 	LoginCredentials = errors.New("Could not find user with those credentials")
+	FavAuthErr = errors.New("Could not find users favourite authors")
+	FavQuoteErr = errors.New("Could not find users favourite quotes")
 )
 
 // DO NOT TOUCH: Context struct is the same used in auth_middleware, must match!!
 const CurrentUserKey = "currentUser"
+
 
 func getUserFromCtx(ctx context.Context) (*model.User, error) {
 	if ctx.Value(CurrentUserKey) == nil {
 		return nil, errors.New("No User in context")
 	}
 	user, ok := ctx.Value(CurrentUserKey).(*model.User)
-
 	if !ok || user.ID == "" {
 		return nil, errors.New("No User in context")
 	}

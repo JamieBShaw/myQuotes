@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="database.down.sql" type="DatabaseScript" editBeforeRun="true" singleton="false">
+    <script-file value="$PROJECT_DIR$/database/migrations/20200904151838_create_favourite_quotes.down.sql" />
+    <script-file value="$PROJECT_DIR$/database/migrations/20200904151823_create_favourite_authors.down.sql" />
+    <script-file value="$PROJECT_DIR$/database/migrations/20200819123853_create_quote.down.sql" />
+    <script-file value="$PROJECT_DIR$/database/migrations/20200819145842_create_authors.down.sql" />
+    <script-file value="$PROJECT_DIR$/database/migrations/20200819110437_create_user.down.sql" />
+    <script-mode>FILE</script-mode>
+    <data-source id="1b841bb5-63d0-46db-ac27-42fbfb6914e0" />
+    <method v="2" />
+  </configuration>
+</component>

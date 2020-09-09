@@ -61,6 +61,7 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		Dob       func(childComplexity int) int
 		Dod       func(childComplexity int) int
+		FavCount  func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Name      func(childComplexity int) int
 		Quotes    func(childComplexity int) int
@@ -102,6 +103,7 @@ type ComplexityRoot struct {
 		Body      func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		DateOf    func(childComplexity int) int
+		FavCount  func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Subject   func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
@@ -226,6 +228,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Author.Dod(childComplexity), true
+
+	case "Author.favCount":
+		if e.complexity.Author.FavCount == nil {
+			break
+		}
+
+		return e.complexity.Author.FavCount(childComplexity), true
 
 	case "Author.id":
 		if e.complexity.Author.ID == nil {
@@ -561,6 +570,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Quote.DateOf(childComplexity), true
 
+	case "Quote.favCount":
+		if e.complexity.Quote.FavCount == nil {
+			break
+		}
+
+		return e.complexity.Quote.FavCount(childComplexity), true
+
 	case "Quote.id":
 		if e.complexity.Quote.ID == nil {
 			break
@@ -726,6 +742,7 @@ type Quote {
   author: Author!
   dateOf: Time
   subject: String
+  favCount: Int!
   user: User!
   createdAt: Time!
   updatedAt: Time!
@@ -737,6 +754,7 @@ type Author {
   subject: String
   DOB: Time!
   DOD: Time!
+  favCount: Int!
   quotes: [Quote!]!
   user: User!
   createdAt: Time!
@@ -756,6 +774,13 @@ type User {
 }
 
 
+#type Favourites {
+#  id: ID!
+#  user: User!
+#  itemType: Boolean!
+#  item_quote_id: String
+#  item_author_id: String
+#}
 
 type AuthToken {
   accessToken: String!
@@ -773,13 +798,16 @@ input UserFilter {
 
 input AuthorFilter {
   name: String
+  creatorId: ID
   subject: String
+  favCount: Int
 }
 
 input QuoteFilter {
   authorId: ID
-  createdId: ID
+  creatorId: ID
   subject: String
+  favCount: Int
 }
 
 input RegisterInput {
@@ -830,6 +858,7 @@ type Query {
 
   author(id: ID!): Author!
   authors(filter: AuthorFilter): [Author!]!
+
 }
 
 type Mutation {
@@ -854,6 +883,8 @@ type Mutation {
   # TODO: Begin implementing upvote/ like functionality for quotes and authors
 
   # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
+
+
 
   addQuoteToFavourites(id: ID!): [Quote]!
   removeQuoteFromFavourites(id: ID!): [Quote]!
@@ -1592,6 +1623,40 @@ func (ec *executionContext) _Author_DOD(ctx context.Context, field graphql.Colle
 	res := resTmp.(time.Time)
 	fc.Result = res
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Author_favCount(ctx context.Context, field graphql.CollectedField, obj *model.Author) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Author",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FavCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Author_quotes(ctx context.Context, field graphql.CollectedField, obj *model.Author) (ret graphql.Marshaler) {
@@ -2863,6 +2928,40 @@ func (ec *executionContext) _Quote_subject(ctx context.Context, field graphql.Co
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Quote_favCount(ctx context.Context, field graphql.CollectedField, obj *model.Quote) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Quote",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FavCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Quote_user(ctx context.Context, field graphql.CollectedField, obj *model.Quote) (ret graphql.Marshaler) {
@@ -4364,9 +4463,21 @@ func (ec *executionContext) unmarshalInputAuthorFilter(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "creatorId":
+			var err error
+			it.CreatorID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "subject":
 			var err error
 			it.Subject, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "favCount":
+			var err error
+			it.FavCount, err = ec.unmarshalOInt2ᚖint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4520,15 +4631,21 @@ func (ec *executionContext) unmarshalInputQuoteFilter(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "createdId":
+		case "creatorId":
 			var err error
-			it.CreatedID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			it.CreatorID, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "subject":
 			var err error
 			it.Subject, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "favCount":
+			var err error
+			it.FavCount, err = ec.unmarshalOInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4703,6 +4820,11 @@ func (ec *executionContext) _Author(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "DOD":
 			out.Values[i] = ec._Author_DOD(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "favCount":
+			out.Values[i] = ec._Author_favCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
@@ -5014,6 +5136,11 @@ func (ec *executionContext) _Quote(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Quote_dateOf(ctx, field, obj)
 		case "subject":
 			out.Values[i] = ec._Quote_subject(ctx, field, obj)
+		case "favCount":
+			out.Values[i] = ec._Quote_favCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "user":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -5513,6 +5640,20 @@ func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface
 
 func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v interface{}) (int32, error) {
+	return graphql.UnmarshalInt32(v)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	res := graphql.MarshalInt32(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -6033,6 +6174,29 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	return ec.marshalOID2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOInt2int32(ctx context.Context, v interface{}) (int32, error) {
+	return graphql.UnmarshalInt32(v)
+}
+
+func (ec *executionContext) marshalOInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	return graphql.MarshalInt32(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v interface{}) (*int32, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int32(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.SelectionSet, v *int32) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int32(ctx, sel, *v)
 }
 
 func (ec *executionContext) marshalOQuote2githubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐQuote(ctx context.Context, sel ast.SelectionSet, v model.Quote) graphql.Marshaler {

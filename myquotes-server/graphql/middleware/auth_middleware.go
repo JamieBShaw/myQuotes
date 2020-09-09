@@ -8,7 +8,6 @@ import (
 	"github.com/JamieBShaw/myquotes-server/database"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
-	"github.com/pkg/errors"
 	l "github.com/sirupsen/logrus"
 )
 
@@ -20,8 +19,9 @@ func AuthMiddleware(db *database.Repository) func(http.Handler) http.Handler {
 			// get token
 			token, err := parseToken(r)
 			// If token could not be parsed from header or nil next handler
+
 			if token == nil || err != nil {
-				l.Warnf("ERROR parsing token: No token in request header, proceeding to next handler", err)
+				l.Warnf("ERROR parsing token: No token in request header, proceeding to next handler ", err)
 				next.ServeHTTP(rw, r)
 				return
 			}
@@ -56,5 +56,8 @@ func parseToken(r *http.Request) (*jwt.Token, error) {
 		t := []byte(os.Getenv("SECRET"))
 		return t, nil
 	})
-	return jwtToken, errors.Wrap(err, "Error parsing token")
+	if err != nil {
+		return nil, err
+	}
+	return jwtToken, nil
 }

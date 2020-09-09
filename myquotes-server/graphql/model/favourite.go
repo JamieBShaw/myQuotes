@@ -1,15 +1,22 @@
 package model
 
-// TODO: Maybe spread favourite quotes and favourite authors apart?
-type Favourite struct {
+type FavouriteQuotes struct {
 	id string
 	UserID string
-	Type bool
-	item_quote_id string
-	author_quote_id string
+	QuoteID string
+}
+
+type FavouriteAuthors struct {
+	id string
+	UserID string
+	AuthorID string
 }
 
 type FavouriteRepository interface {
 	 GetUsersFavouriteQuotes(id string) ([]*Quote, error)
 	 GetUsersFavouriteAuthors(id string) ([]*Author, error)
+	 AddQuoteToUsersFavourites(userID, quoteID string) error
+	 AddAuthorToUsersFavourites(userID, authorID string) error
+	 RemoveQuoteFromUsersFavourites(userID, quoteID string) error
+	 RemoveAuthorFromUsersFavourites(userID, quoteID string) error
 }

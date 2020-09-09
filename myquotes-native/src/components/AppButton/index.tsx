@@ -5,41 +5,42 @@ import {
   NativeTouchEvent,
   View,
   Text,
-  StyleSheet,
   ButtonProps,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
 } from "react-native";
 import { Theme } from "../../../theme";
 
-interface Props extends Partial<ButtonProps> {
+type BProps = Partial<ButtonProps>;
+type NamedStyles = ViewStyle | TextStyle | ImageStyle;
+
+interface Props extends BProps {
   text: string;
   onPress: (en: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  style?: NamedStyles;
+  fontSize?: number;
 }
 
 export const AppButton: React.FC<Props> = (props) => {
+  const { style } = props;
+
   return (
     <View>
-      <TouchableOpacity {...props} onPress={props.onPress}>
-        <View style={styles.button}>
-          <Text style={styles.text}>{props.text}</Text>
+      <TouchableOpacity style={style} {...props} onPress={props.onPress}>
+        <View>
+          <Text
+            style={{
+              textAlign: "center",
+              fontFamily: Theme.font.primary,
+              fontStyle: "italic",
+              fontSize: props.fontSize,
+            }}
+          >
+            {props.text}
+          </Text>
         </View>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: Theme.colors.buttonPrimary,
-    width: "60%",
-    alignSelf: "center",
-    height: 48,
-  },
-
-  text: {
-    padding: 5,
-    textAlign: "center",
-    fontFamily: Theme.font.primary,
-    fontStyle: "italic",
-    fontSize: Theme.font.size + 6,
-  },
-});

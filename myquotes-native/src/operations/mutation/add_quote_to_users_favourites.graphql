@@ -1,0 +1,13 @@
+mutation AddQuoteToUsersFav($id: ID!) {
+  addQuoteToFavourites(id: $id) {
+    id
+    body
+    favCount
+    author {
+      id
+    }
+    subject
+    createdAt
+    updatedAt
+  }
+}

@@ -19,7 +19,7 @@ func (a *Auth) CreateAuthor(ctx context.Context, input model.AuthorCreateInput) 
 		Name:   input.Name,
 		Dob:    input.Dob,
 		Dod:    input.Dod,
-		UserID: user.ID,
+		CreatorID: user.ID,
 	}
 
 	_, err = a.Repo.CreateAuthor(author)
@@ -73,7 +73,7 @@ func (a *Auth) EditAuthorName(ctx context.Context, id string, name string) (*mod
 		return nil, GenericErr
 	}
 
-	if author.CreatedID != user.ID {
+	if author.CreatorID != user.ID {
 		return nil, AuthErr
 	}
 	author.Name = name
@@ -101,7 +101,7 @@ func (a *Auth) EditAuthorDob(ctx context.Context, id string, dob time.Time) (*mo
 		return nil, GenericErr
 	}
 
-	if author.CreatedID != user.ID {
+	if author.CreatorID != user.ID {
 		return nil, AuthErr
 	}
 	author.Dob = dob
@@ -123,7 +123,7 @@ func (a *Auth) EditAuthorDod(ctx context.Context, id string, dod time.Time) (*mo
 		return nil, GenericErr
 	}
 
-	if author.CreatedID != user.ID {
+	if author.CreatorID != user.ID {
 		return nil, AuthErr
 	}
 	author.Dod = dod
@@ -136,23 +136,45 @@ func (a *Auth) EditAuthorDod(ctx context.Context, id string, dod time.Time) (*mo
 
 
 func (a *Auth) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
-	_, err := getUserFromCtx(ctx)
+	log.Info("Beginning adding author to users favourites process.............")
+	user, err := getUserFromCtx(ctx)
 	if err != nil {
 		return nil, AuthErr
 	}
-	_, err = a.Repo.AuthorByID(id)
+
+	err = a.Repo.AddAuthorToUsersFavourites(user.ID, id)
 	if err != nil {
+		log.Error("Error:  ", err)
+		return nil, GenericErr
+	}
+
+	authors, err := a.Repo.GetUsersFavouriteAuthors(user.ID)
+	if err != nil {
+		log.Error("Error:   ", err)
+		return nil, err
+	}
+
+	log.Info("Author added to favourites successfully updated")
+	return authors, nil
+}
+
+
+
+func (a *Auth) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*model.Author, error) {
+	log.Info("Beginning removing author from users favourites process.............")
+	user, err := getUserFromCtx(ctx)
+	if err != nil {
+		return nil, AuthErr
+	}
+
+	err = a.Repo.AddAuthorToUsersFavourites(user.ID, id)
+	if err != nil {
+		log.Error("Error:  ", err)
 		return nil, GenericErr
 	}
 
 	return nil, nil
-
-
 }
 
-
-func (a *Auth) RemoveAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
-	return nil, nil
-}
 
 

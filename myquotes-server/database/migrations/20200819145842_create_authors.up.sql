@@ -3,7 +3,9 @@ CREATE TABLE authors (
     name VARCHAR(55) UNIQUE NOT NULL,
     dob TIMESTAMP DEFAULT NOW() NOT NULL,
     dod TIMESTAMP DEFAULT NOW(),
+    fav_count integer,
+    creator_id BIGSERIAL references users (id) ON DELETE CASCADE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    user_id BIGSERIAL references users (id) ON DELETE CASCADE NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+
 );

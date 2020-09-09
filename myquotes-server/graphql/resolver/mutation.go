@@ -19,16 +19,15 @@ func (r *mutationResolver) AddQuoteToFavourites(ctx context.Context, id string) 
 }
 
 func (r *mutationResolver) RemoveQuoteFromFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
-	return r.Auth.RemoveQuoteToFavourites(ctx, id)
+	return r.Auth.RemoveQuoteFromFavourites(ctx, id)
 }
 
 func (r *mutationResolver) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
-
 	return r.Auth.AddAuthorToFavourites(ctx, id)
 }
 
 func (r *mutationResolver) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*model.Author, error) {
-	return r.Auth.RemoveAuthorToFavourites(ctx, id)
+	return r.Auth.RemoveAuthorFromFavourites(ctx, id)
 }
 
 func (r *mutationResolver) RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error) {

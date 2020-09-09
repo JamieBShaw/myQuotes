@@ -1,0 +1,13 @@
+mutation RemoveQuoteFromUsersFav($id: ID!) {
+  removeQuoteFromFavourites(id: $id) {
+    id
+    body
+    favCount
+    author {
+      id
+    }
+    subject
+    createdAt
+    updatedAt
+  }
+}

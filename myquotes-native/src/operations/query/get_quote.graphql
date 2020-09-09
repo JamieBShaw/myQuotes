@@ -1,10 +1,10 @@
-query GetQuotes {
-  quotes(filter: {}) {
+query GetQuote($id: ID!) {
+  quote(id: $id) {
     id
     body
     author {
-      id
       name
+      id
     }
     favCount
   }

@@ -9,7 +9,7 @@ require (
 	github.com/go-pg/pg/v10 v10.0.0-beta.9
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
-	github.com/joho/godotenv v1.3.0 // indirect
+	github.com/joho/godotenv v1.3.0
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/vektah/dataloaden v0.3.0 // indirect

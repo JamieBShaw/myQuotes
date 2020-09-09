@@ -18,6 +18,13 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
   },
+  button: {
+    backgroundColor: Theme.colors.buttonPrimary,
+    width: "60%",
+    alignSelf: "center",
+    height: 48,
+    padding: 5,
+  },
   text: {
     alignSelf: "center",
     margin: 10,
@@ -31,5 +38,19 @@ export const styles = StyleSheet.create({
     fontStyle: "italic",
     fontWeight: "bold",
     textDecorationLine: "underline",
+  },
+});
+
+export const buttonStyles = StyleSheet.create({
+  button: {
+    backgroundColor: Theme.colors.buttonPrimary,
+    width: "60%",
+    alignSelf: "center",
+    height: 48,
+    padding: 5,
+    textAlign: "center",
+    fontFamily: Theme.font.primary,
+    fontStyle: "italic",
+    fontSize: Theme.font.size + 6,
   },
 });

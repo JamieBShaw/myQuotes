@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, AsyncStorage } from "react-native";
+import React, { useState, useContext } from "react";
+import { View } from "react-native";
 import { AppButton } from "../../../components/AppButton";
 import {
   useRegisterUserMutation,
@@ -9,6 +9,9 @@ import { AppTextInput } from "../../../components/AppTextInput";
 import { styles } from "../login/styles";
 import { GraphQLError } from "graphql";
 import { ApolloError } from "@apollo/client";
+import { AuthContext } from "../../../context/auth";
+import { ActionTypes } from "../../../context/actions";
+import { setUserToken } from "../../../utils/auth/Auth";
 
 const initialState: RegisterInput = {
   username: "",
@@ -19,26 +22,12 @@ const initialState: RegisterInput = {
 const registerErrInitialState = initialState;
 
 const RegisterView: React.FC = ({ navigation }: any) => {
+  const { dispatch } = useContext(AuthContext);
   const [input, setInputs] = useState(initialState);
   const [inputErrors, setInputErrors] = useState(registerErrInitialState);
   const [err, setErr] = useState(false);
 
-  const [registerUserMutation, { data }] = useRegisterUserMutation();
-
-  if (data) {
-    async () => {
-      try {
-        await AsyncStorage.setItem(
-          "token",
-          data.registerUser.authToken.accessToken
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    navigation.navigate("Home");
-  }
+  const [registerUserMutation] = useRegisterUserMutation();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -52,17 +41,40 @@ const RegisterView: React.FC = ({ navigation }: any) => {
           confirmPassword: input.confirmPassword,
         },
       },
-    }).catch((e: ApolloError) => {
-      e.graphQLErrors.map((e: GraphQLError) => {
-        if (e.extensions?.field) {
-          const field: keyof RegisterInput = e.extensions!.field;
-          const errorMessage: string = e.message;
-          setInputErrors({ ...inputErrors, [field]: errorMessage });
+    })
+      .then(({ data }) => {
+        if (data) {
+          const {
+            registerUser: { authToken, user },
+          } = data;
+
+          dispatch({
+            type: ActionTypes.registerUser,
+            payload: {
+              email: user.email,
+              id: user.id,
+              isLoggedIn: true,
+              username: user.username,
+              favouriteQuotes: user.favouriteQuotes,
+              favouriteAuthors: user.favouriteAuthors,
+            },
+          });
+          setUserToken(authToken.accessToken).then(() =>
+            navigation.navigate("Home")
+          );
         }
+      })
+      .catch((e: ApolloError) => {
+        e.graphQLErrors.map((e: GraphQLError) => {
+          if (e.extensions?.field) {
+            const field: keyof RegisterInput = e.extensions!.field;
+            const errorMessage: string = e.message;
+            setInputErrors({ ...inputErrors, [field]: errorMessage });
+          }
+        });
+        setErr(true);
+        setInputs(initialState);
       });
-      setErr(true);
-      setInputs(initialState);
-    });
   };
 
   const handleInput = (event: { name: string; text: string }): void => {

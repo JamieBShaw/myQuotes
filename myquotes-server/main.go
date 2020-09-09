@@ -7,8 +7,6 @@ import (
 
 	"github.com/JamieBShaw/myquotes-server/graphql/auth"
 	customMiddleware "github.com/JamieBShaw/myquotes-server/graphql/middleware"
-	"github.com/rs/cors"
-
 	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi"
@@ -59,17 +57,21 @@ func main() {
 
 	router := chi.NewRouter()
 
-	opts := cors.Options{
-		AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
-			"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
-			"http://localhost:19006/", "http://192.168.0.189:19006/",
-			"http://localhost:19006", "http://192.168.0.189:19001",
-			"exp://192.168.0.189:19000"},
-
-		AllowCredentials: true,
-		Debug:            true,
-	}
-	router.Use(cors.New(opts).Handler)
+	//opts := cors.Options{
+	//	AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
+	//		"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
+	//		"http://localhost:19006/", "http://192.168.0.189:19006/",
+	//		"http://localhost:19006", "http://192.168.0.189:19001",
+	//		"exp://192.168.0.189:19000", "exp://192.168.0.189:19000", "192.168.0.189:8080",
+	//			"192.168.0.189:8080"},
+	//	AllowedMethods:         []string{"*"},
+	//	AllowedHeaders:         []string{"*"},
+	//	ExposedHeaders:         []string{"*"},
+	//	AllowCredentials:       true,
+	//	OptionsPassthrough:     true,
+	//	Debug:                  true,
+	//}
+	//router.Use(cors.New(opts).Handler)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(customMiddleware.AuthMiddleware(db))
