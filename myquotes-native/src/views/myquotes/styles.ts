@@ -15,4 +15,12 @@ export const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 40,
   },
+
+  quoteContainer: {
+    backgroundColor: Theme.colors.background,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    padding: 5,
+    margin: 5,
+  },
 });

@@ -1,17 +1,19 @@
 import React, { useState, useContext } from "react";
-import { View } from "react-native";
-import { AppButton } from "../../../components/AppButton";
+import { View, Keyboard, Image, Dimensions, StatusBar } from "react-native";
 import {
   useRegisterUserMutation,
   RegisterInput,
 } from "../../../generated/graphql";
+import { ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+
+import { AppButton } from "../../../components/AppButton";
 import { AppTextInput } from "../../../components/AppTextInput";
 import { styles } from "../login/styles";
-import { GraphQLError } from "graphql";
-import { ApolloError } from "@apollo/client";
-import { AuthContext } from "../../../context/auth";
-import { ActionTypes } from "../../../context/actions";
-import { setUserToken } from "../../../utils/auth/Auth";
+import { AuthContext } from "../../../state/context/auth";
+import { ActionTypes } from "../../../state/actions/actions";
+import { setUserToken } from "../../../utils/token";
 
 const initialState: RegisterInput = {
   username: "",
@@ -20,6 +22,8 @@ const initialState: RegisterInput = {
   confirmPassword: "",
 };
 const registerErrInitialState = initialState;
+
+const { height, width } = Dimensions.get("window");
 
 const RegisterView: React.FC = ({ navigation }: any) => {
   const { dispatch } = useContext(AuthContext);
@@ -31,7 +35,8 @@ const RegisterView: React.FC = ({ navigation }: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("sending");
+    Keyboard.dismiss();
+
     registerUserMutation({
       variables: {
         input: {
@@ -55,8 +60,8 @@ const RegisterView: React.FC = ({ navigation }: any) => {
               id: user.id,
               isLoggedIn: true,
               username: user.username,
-              favouriteQuotes: user.favouriteQuotes,
-              favouriteAuthors: user.favouriteAuthors,
+              favouriteQuotes: user.favouriteQuotes!,
+              favouriteAuthors: user.favouriteAuthors!,
             },
           });
           setUserToken(authToken.accessToken).then(() =>
@@ -85,18 +90,28 @@ const RegisterView: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ paddingTop: 100 }}>
-        <View style={styles.textInput}>
-          <AppTextInput
-            value={input.email}
-            name="email"
-            onError={err}
-            errorMessage={inputErrors ? inputErrors["email"] : ""}
-            placeholder="Email..."
-            onCustomChange={handleInput}
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View style={styles.imageContainer}>
+          <Image
+            style={{ width: width, height: height }}
+            source={require("../../../../assets/images/register.jpg")}
           />
         </View>
-        <View style={{ paddingBottom: 5 }}>
+        <View style={{ paddingTop: 100 }}>
+          <View style={styles.textInput}>
+            <AppTextInput
+              value={input.email}
+              name="email"
+              onError={err}
+              errorMessage={inputErrors ? inputErrors["email"] : ""}
+              placeholder="Email..."
+              onCustomChange={handleInput}
+            />
+          </View>
           <View style={styles.textInput}>
             <AppTextInput
               value={input.username}
@@ -107,8 +122,6 @@ const RegisterView: React.FC = ({ navigation }: any) => {
               onCustomChange={handleInput}
             />
           </View>
-        </View>
-        <View style={{ paddingBottom: 5 }}>
           <View style={styles.textInput}>
             <AppTextInput
               secureTextEntry
@@ -117,11 +130,9 @@ const RegisterView: React.FC = ({ navigation }: any) => {
               onError={err}
               errorMessage={inputErrors ? inputErrors["password"] : ""}
               onCustomChange={handleInput}
-              placeholder="Passowrd..."
+              placeholder="Password..."
             />
           </View>
-        </View>
-        <View>
           <View style={styles.textInput}>
             <AppTextInput
               secureTextEntry
@@ -133,11 +144,17 @@ const RegisterView: React.FC = ({ navigation }: any) => {
               onCustomChange={handleInput}
             />
           </View>
+          <View style={{ height: height / 3, paddingTop: 10 }}>
+            <AppButton
+              style={styles.button}
+              textStyle={{ fontSize: 18 }}
+              text="Sign me up"
+              onPress={handleSubmit}
+            />
+          </View>
         </View>
-        <View style={{ paddingTop: 25 }}>
-          <AppButton text="Sign me up" onPress={handleSubmit} />
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
+      <StatusBar hidden />
     </View>
   );
 };

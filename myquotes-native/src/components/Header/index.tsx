@@ -17,10 +17,11 @@ export const Header: React.FC<Props> = ({ title }) => {
 const styles = StyleSheet.create({
   header: {
     width: "100%",
-    height: 50,
-    paddingTop: 30,
-    padding: 20,
+    paddingTop: 10,
+    padding: 10,
     backgroundColor: Theme.colors.background,
+    borderBottomColor: Theme.colors.border,
+    borderBottomWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },

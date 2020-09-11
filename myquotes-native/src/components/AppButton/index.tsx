@@ -8,33 +8,34 @@ import {
   ButtonProps,
   ViewStyle,
   TextStyle,
-  ImageStyle,
 } from "react-native";
 import { Theme } from "../../../theme";
 
 type BProps = Partial<ButtonProps>;
-type NamedStyles = ViewStyle | TextStyle | ImageStyle;
+type NamedStyles = ViewStyle | TextStyle;
 
 interface Props extends BProps {
-  text: string;
-  onPress: (en: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  text?: any;
+  onPress?: (en: NativeSyntheticEvent<NativeTouchEvent>) => void;
   style?: NamedStyles;
-  fontSize?: number;
+  textStyle?: NamedStyles;
 }
 
 export const AppButton: React.FC<Props> = (props) => {
-  const { style } = props;
-
   return (
     <View>
-      <TouchableOpacity style={style} {...props} onPress={props.onPress}>
+      <TouchableOpacity
+        style={{ ...props.style }}
+        {...props}
+        onPress={props.onPress}
+      >
         <View>
           <Text
             style={{
-              textAlign: "center",
               fontFamily: Theme.font.primary,
+              fontWeight: "bold",
               fontStyle: "italic",
-              fontSize: props.fontSize,
+              ...props.textStyle,
             }}
           >
             {props.text}

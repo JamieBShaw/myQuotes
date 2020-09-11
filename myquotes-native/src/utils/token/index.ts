@@ -9,3 +9,15 @@ export const setUserToken = (newToken: string) => {
 export const removeUserToken = () => {
   return AsyncStorage.removeItem(ACCESS_TOKEN);
 };
+
+export const checkTokenExistsOnStartUp = async (initialRoute: string) => {
+  try {
+    const token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    if (!token) {
+      return;
+    }
+    initialRoute = "Home";
+  } catch (e) {
+    console.warn("Token, warn", e);
+  }
+};

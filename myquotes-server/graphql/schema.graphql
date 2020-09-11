@@ -1,4 +1,3 @@
-# GraphQL schema example
 
 scalar Time
 
@@ -39,15 +38,6 @@ type User {
   updatedAt: Time!
 }
 
-
-#type Favourites {
-#  id: ID!
-#  user: User!
-#  itemType: Boolean!
-#  item_quote_id: String
-#  item_author_id: String
-#}
-
 type AuthToken {
   accessToken: String!
   expiredAt: Time!
@@ -66,7 +56,9 @@ input AuthorFilter {
   name: String
   creatorId: ID
   subject: String
+  dob: Time
   favCount: Int
+  CreatedAt: Time
 }
 
 input QuoteFilter {
@@ -74,6 +66,7 @@ input QuoteFilter {
   creatorId: ID
   subject: String
   favCount: Int
+  dateOf: Time
   CreatedAt: Time
 }
 

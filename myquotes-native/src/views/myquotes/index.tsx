@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, Text } from "react-native";
-import { Header } from "../../components/Header/index";
-import { AuthContext } from "../../context/auth";
+import { Header } from "../../components/Header/";
+import { AuthContext } from "../../state/context/auth";
 import { styles } from "./styles";
 
 const MyQuotes: React.FC = () => {
@@ -9,12 +9,12 @@ const MyQuotes: React.FC = () => {
 
   return (
     <View style={styles.screen}>
-      <Header title="My Quotes" />
       <View style={styles.mainContainer}>
+        <Header title="My Quotes" />
         <View style={{ backgroundColor: "red" }}>
           {state.favouriteQuotes?.map((quote) => {
             return (
-              <View key={quote?.id}>
+              <View style={styles.quoteContainer} key={quote?.id}>
                 <Text>{quote?.body}</Text>
               </View>
             );

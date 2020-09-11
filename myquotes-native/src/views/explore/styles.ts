@@ -1,36 +1,36 @@
 import { StyleSheet } from "react-native";
+import { Theme } from "../../../theme";
 
 export const styles = StyleSheet.create({
-  container: {
-    margin: 10,
+  screen: {
+    flex: 1,
+  },
+  mainContainer: {
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 36,
+    fontFamily: Theme.font.primary,
+    color: Theme.colors.textPrimary,
+    backgroundColor: Theme.colors.background,
+    padding: 16,
+    borderColor: "black",
+    borderWidth: 1,
   },
-  //   textInput: {
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     padding: 10,
-  //     margin: 0,
-  //   },
-  //   textContainer: {
-  //     display: "flex",
-  //     flexDirection: "row",
-  //     padding: 10,
-  //   },
-  //   text: {
-  //     alignSelf: "center",
-  //     margin: 10,
-  //     textAlign: "center",
-  //     fontSize: 24,
-  //     fontFamily: "Philosopher_400Regular",
-  //     fontStyle: "normal",
-  //     fontWeight: "normal",
-  //   },
-  //   textSecondary: {
-  //     fontStyle: "italic",
-  //     fontWeight: "bold",
-  //     textDecorationLine: "underline",
-  //   },
+  searchContainer: {
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  searchInput: {
+    height: 45,
+    flex: 1,
+    backgroundColor: Theme.colors.backgroundSecondary,
+    paddingHorizontal: 15,
+    marginTop: 5,
+    borderRadius: 10,
+    fontSize: Theme.font.size,
+    fontFamily: Theme.font.primary,
+    color: Theme.colors.textPrimary,
+  },
 });

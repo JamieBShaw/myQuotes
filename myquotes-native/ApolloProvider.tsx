@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 import AsyncStorage from "@react-native-community/async-storage";
-import { ACCESS_TOKEN } from "./src/utils/auth/Auth";
+import { ACCESS_TOKEN } from "./src/utils/token";
 
 const Port = "8080";
 const Uri = "192.168.0.189";

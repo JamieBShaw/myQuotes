@@ -5,13 +5,17 @@ import {
   StyleSheet,
   Text,
   View,
+  TextStyle,
+  ViewStyle,
 } from "react-native";
 import { Theme } from "../../../theme";
 
+type NamedStyles = ViewStyle | TextStyle;
 interface Props extends TextInputProps {
   value: string;
   name: string;
   onError?: boolean;
+  styles?: NamedStyles;
   errorMessage?: string;
   onCustomChange: ({ name, text }: { name: string; text: string }) => void;
 }
@@ -31,7 +35,9 @@ export const AppTextInput: React.FC<Props> = (props) => {
   return (
     <View>
       <TextInput
-        style={onError ? styles.inputError : styles.input}
+        style={
+          onError ? styles.inputError : { ...styles.input, ...props.styles }
+        }
         {...props}
         value={value}
         onChangeText={(text) => onCustomChange({ name, text })}
@@ -44,11 +50,10 @@ export const AppTextInput: React.FC<Props> = (props) => {
 const styles = StyleSheet.create({
   input: {
     backgroundColor: Theme.colors.background,
-    borderColor: Theme.colors.border,
-    borderBottomWidth: 1,
+    borderRadius: 20,
     width: "80%",
     height: 66,
-    paddingLeft: 10,
+    paddingLeft: 15,
     alignSelf: "center",
     textAlign: "left",
     fontFamily: Theme.font.primary,
@@ -60,11 +65,11 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: Theme.colors.error,
     color: Theme.colors.error,
-    borderBottomWidth: 1,
+    borderWidth: 1,
     backgroundColor: Theme.colors.background,
     width: "80%",
     height: 66,
-    paddingLeft: 10,
+    paddingLeft: 15,
     alignSelf: "center",
     textAlign: "left",
     fontFamily: Theme.font.primary,

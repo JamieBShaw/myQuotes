@@ -12,24 +12,6 @@ type Auth struct {
 	Repo model.Repository
 }
 
-
-
-
-
-
-
-// Literally don't need this interface, the generated.mutationResolver interface implements all these methods
-// Why does it implement all these methods that require auth you ask? Well there all mutations and changing data
-// In my application requires authentication and context of the user who is mutating that data so obvvvvvviously
-// Now this all makes sense.
-// Will keep this here as a reminder of my stupidity
-type AuthServices interface {
-	RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error)
-	LoginUser(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error)
-	CreateQuote(ctx context.Context, input model.QuoteCreateInput) ([]*model.Quote, error)
-	CreateAuthor(ctx context.Context, input model.AuthorCreateInput) (*model.Author, error)
-}
-
 func NewAuth(repo model.Repository) *Auth {
 	return &Auth{
 		Repo: repo,

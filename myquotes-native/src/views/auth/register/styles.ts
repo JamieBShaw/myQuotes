@@ -5,6 +5,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Theme.colors.background,
   },
+
+  imageContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
+    flex: 1,
+  },
   textInput: {
     display: "flex",
     flexDirection: "column",
@@ -15,6 +21,15 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     padding: 10,
+  },
+  button: {
+    backgroundColor: Theme.colors.buttonPrimary,
+    width: "60%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 48,
+    padding: 5,
+    borderRadius: 20,
   },
   text: {
     alignSelf: "center",

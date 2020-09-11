@@ -1,19 +1,25 @@
-import { removeUserToken } from "../utils/auth/Auth";
-import { IUserActions, ActionTypes } from "./actions";
-import { IUser } from "./auth";
+import { removeUserToken } from "../../utils/token";
+import { IUserActions, ActionTypes } from "../actions/actions";
+import { IUser } from "../context/auth";
 
 export const authReducer = (state: IUser, action: IUserActions): IUser => {
   switch (action.type) {
     case ActionTypes.addQuoteToUsersFavourites:
-      console.log("payload quote id: ", action.payload?.id);
-
+      if (
+        state.favouriteQuotes?.length === 0 ||
+        state.favouriteQuotes === undefined ||
+        state.favouriteQuotes === null
+      ) {
+        return {
+          ...state,
+          favouriteQuotes: [action.payload],
+        };
+      }
       return {
         ...state,
         favouriteQuotes: [...state.favouriteQuotes, action.payload],
       };
     case ActionTypes.removeQuoteFromUsersFavourites:
-      console.log("payload quote id: ", action.payload);
-
       return {
         ...state,
         favouriteQuotes: state.favouriteQuotes?.filter(
@@ -21,8 +27,6 @@ export const authReducer = (state: IUser, action: IUserActions): IUser => {
         ),
       };
     case ActionTypes.loginUser:
-      console.log("payload login user id: ", action.payload.id);
-
       return {
         ...state,
         email: action.payload.email,
@@ -33,8 +37,9 @@ export const authReducer = (state: IUser, action: IUserActions): IUser => {
         favouriteAuthors: action.payload.favouriteAuthors,
       };
     case ActionTypes.registerUser:
-      console.log("payload register user id: ", action.payload.id);
-
+      if (action.payload.favouriteQuotes === null) {
+        action.payload.favouriteQuotes = undefined;
+      }
       return {
         ...state,
         email: action.payload.email,

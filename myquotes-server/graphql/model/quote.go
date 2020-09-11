@@ -12,7 +12,7 @@ type Quote struct {
 	AuthorID  string     `json:"authorId" validate:"required"`
 	DateOf    *time.Time `json:"dateOf"`
 	Subject   *string    `json:"subject"`
-	FavCount  int32     `json:"favCount"`
+	FavCount  int32      `json:"favCount"`
 	CreatorID string     `json:"creatorID" validate:"required"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
@@ -32,8 +32,8 @@ type QuoteFilter struct {
 	CreatorID *string   `json:"creatorId"`
 	Subject   *string   `json:"subject"`
 	FavCount  int32     `json:"favCount"`
-
-
+	DateOf    time.Time `json:"dateOf"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type QuoteCreateInput struct {

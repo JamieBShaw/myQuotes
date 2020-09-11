@@ -33,6 +33,8 @@ type AuthorFilter struct {
 	Subject *string `json:"subject"`
 	CreatorID *string `json:"creatorID"`
 	FavCount *int32 `json:"favCount"`
+	Dob time.Time `json:"dob"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type AuthorCreateInput struct {

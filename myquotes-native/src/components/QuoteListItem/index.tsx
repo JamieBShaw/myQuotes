@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { AppButton } from "./AppButton";
-import { Theme } from "../../theme";
-import { QuoteData } from "../utils/interfaces/Quote";
+import { MaterialIcons } from "@expo/vector-icons";
+
+import { AppButton } from "../AppButton";
+import { Theme } from "../../../theme";
+import { QuoteData } from "../../utils/interfaces";
 
 interface Props {
   quote: QuoteData;
@@ -11,7 +13,7 @@ interface Props {
   removeQuoteFromFav: (id: string) => void;
 }
 
-export const QuoteListItem: React.FC<Props> = ({
+export const Index: React.FC<Props> = ({
   quote,
   addQuoteToFav,
   likedByUser,
@@ -29,11 +31,24 @@ export const QuoteListItem: React.FC<Props> = ({
         </Text>
         <View>
           <AppButton
-            text={likedByUser(quote) ? "-" : "+"}
+            text={
+              likedByUser(quote) ? (
+                <MaterialIcons
+                  name="remove-circle-outline"
+                  size={20}
+                  color="black"
+                />
+              ) : (
+                <MaterialIcons
+                  name="add-circle-outline"
+                  size={20}
+                  color="black"
+                />
+              )
+            }
             style={
               likedByUser(quote) ? styles.secondaryButton : styles.primaryButton
             }
-            fontSize={18}
             onPress={
               likedByUser(quote)
                 ? () => removeQuoteFromFav(quote.id)
@@ -49,10 +64,14 @@ export const QuoteListItem: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Theme.colors.background,
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
     padding: 5,
+    elevation: 2, // android
+    shadowColor: "black", // ios
+    shadowOffset: { width: 0, height: 1 }, // ios
+    shadowRadius: 4, // ios
+    shadowOpacity: 0.25, // ios
     margin: 5,
+    borderRadius: 10,
   },
 
   primaryButton: {

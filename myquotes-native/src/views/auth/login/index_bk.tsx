@@ -1,15 +1,7 @@
-import React, { useState, useContext, useRef } from "react";
-import {
-  View,
-  Text,
-  Keyboard,
-  Image,
-  StatusBar,
-  Dimensions,
-} from "react-native";
-import Animated from "react-native-reanimated";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import React, { useState, useContext } from "react";
+import { View, Text, Keyboard, Image } from "react-native";
 import { useLoginUserMutation, LoginInput } from "../../../generated/graphql";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { ApolloError } from "@apollo/client";
 
 import { AppButton } from "../../../components/AppButton";
@@ -17,6 +9,7 @@ import { AppTextInput } from "../../../components/AppTextInput";
 import { styles } from "./styles";
 import { setUserToken } from "../../../utils/token";
 import { AuthContext } from "../../../state/context/auth";
+import { Theme } from "../../../../theme";
 import { ActionTypes } from "../../../state/actions/actions";
 import { GraphQLError } from "graphql";
 
@@ -24,11 +17,8 @@ const initialState: LoginInput = {
   usernameOrEmail: "",
   password: "",
 };
+
 const loginErrInitialState = initialState;
-
-const { height, width } = Dimensions.get("window");
-
-const { Value, interpolate, Extrapolate } = Animated;
 
 const LoginView: React.FC = ({ navigation }: any) => {
   const { dispatch } = useContext(AuthContext);
@@ -37,14 +27,6 @@ const LoginView: React.FC = ({ navigation }: any) => {
   const [inputErrors, setInputErrors] = useState(loginErrInitialState);
   const [loginUserMutation] = useLoginUserMutation();
 
-  const buttonOpacity = useRef(new Value(1));
-  const buttonY = useRef(
-    interpolate(buttonOpacity.current, {
-      inputRange: [0, 1],
-      outputRange: [100, 0],
-      extrapolate: Extrapolate.CLAMP,
-    })
-  );
   const handleSubmit = (e: any) => {
     e.preventDefault();
     Keyboard.dismiss();
@@ -106,13 +88,24 @@ const LoginView: React.FC = ({ navigation }: any) => {
           Keyboard.dismiss();
         }}
       >
-        <View style={styles.imageContainer}>
+        <View
+          style={{
+            padding: 40,
+            backgroundColor: "red",
+            borderColor: "black",
+            borderWidth: 1,
+          }}
+        >
           <Image
-            style={{ height: height, width: width }}
             source={require("../../../../assets/images/bg.jpg")}
+            style={{ flex: 1 }}
           />
         </View>
-        <View style={{ paddingTop: 150 }}>
+        <View
+          style={{
+            paddingTop: 100,
+          }}
+        >
           <View style={styles.textInput}>
             <AppTextInput
               placeholder="Username or Email"
@@ -141,38 +134,27 @@ const LoginView: React.FC = ({ navigation }: any) => {
             />
           </View>
         </View>
-        <View
-          style={{
-            height: "100%",
-            paddingTop: 10,
-          }}
-        >
-          <AppButton
-            style={styles.button}
-            textStyle={{ fontSize: 18 }}
-            text="Login"
-            onPress={handleSubmit}
-          />
-          <Animated.View
-            style={{
-              ...styles.textContainer,
-              opacity: buttonOpacity.current,
-              translateY: buttonY.current,
-            }}
-          >
-            <Text style={styles.text}>
-              Or if you don't have an account yet,{" "}
-              <Text
-                onPress={() => navigation.navigate("Register")}
-                style={styles.textSecondary}
-              >
-                register here.
-              </Text>
-            </Text>
-          </Animated.View>
+        <View>
+          <View style={{ padding: 25 }}>
+            <AppButton
+              style={styles.button}
+              fontSize={Theme.font.size + 6}
+              text="Login"
+              onPress={handleSubmit}
+            />
+          </View>
         </View>
-
-        <StatusBar hidden />
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Or if you don't have an account yet,{" "}
+            <Text
+              onPress={() => navigation.navigate("Register")}
+              style={styles.textSecondary}
+            >
+              register here.
+            </Text>
+          </Text>
+        </View>
       </TouchableWithoutFeedback>
     </View>
   );

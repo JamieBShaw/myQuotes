@@ -48,7 +48,6 @@ type RegisterInput struct {
 func (u *User) GenerateToken() (*AuthToken, error) {
 
 	expiredAt := time.Now().Add(time.Hour * 24 * 7) // week
-	//	refreshAt := time.Now().Add(time.Hour * 24)     // day
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		ExpiresAt: expiredAt.Unix(),

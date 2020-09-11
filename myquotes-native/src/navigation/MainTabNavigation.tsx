@@ -3,18 +3,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MyQuotes from "../views/myquotes";
 import Home from "../views/home";
-import Explore from "../views/explore";
 
 const TabNav = createBottomTabNavigator();
+
+// Add create tab or inegrate into myQuotes
 
 const MainTabNavigation = () => {
   return (
     <TabNav.Navigator initialRouteName="Home">
-      <TabNav.Screen
-        name="Explore"
-        options={{ title: "Explore" }}
+      {/* <TabNav.Screen
+        name="Search"
+        options={{ title: "Search" }}
         component={Explore}
-      />
+      /> */}
       <TabNav.Screen name="Home" component={Home} />
       <TabNav.Screen
         name="MyQuotes"

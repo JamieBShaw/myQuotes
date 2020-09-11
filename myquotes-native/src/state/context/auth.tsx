@@ -1,9 +1,9 @@
 import React, { createContext, Dispatch, useReducer } from "react";
-import { IUserActions } from "./actions";
-import { authReducer } from "./authReducer";
-import { Scalars } from "../generated/graphql";
-import { StateQuoteArray } from "../utils/interfaces/Quote";
-import { StateAuthorArray } from "../utils/interfaces/Author";
+import { IUserActions } from "../actions/actions";
+import { authReducer } from "../reducer/authReducer";
+import { Scalars } from "../../generated/graphql";
+import { StateQuoteArray,  StateAuthorArray  } from "../../utils/interfaces";
+
 
 export interface IUser {
   __typename?: "user";

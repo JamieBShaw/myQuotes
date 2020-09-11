@@ -3,15 +3,16 @@ import { Theme } from "../../../../theme";
 
 export const styles = StyleSheet.create({
   container: {
-    margin: 10,
     flex: 1,
     backgroundColor: Theme.colors.background,
+    opacity: 0.95,
+  },
+  imageContainer: {
+    flex: 1,
   },
   textInput: {
-    display: "flex",
     flexDirection: "column",
-    padding: 10,
-    margin: 0,
+    padding: 20,
   },
   textContainer: {
     display: "flex",
@@ -19,38 +20,25 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   button: {
-    backgroundColor: Theme.colors.buttonPrimary,
-    width: "60%",
+    backgroundColor: Theme.colors.background,
     alignSelf: "center",
+    width: "69%",
+    alignItems: "center",
+    justifyContent: "center",
     height: 48,
-    padding: 5,
+    borderRadius: 25,
   },
   text: {
     alignSelf: "center",
     margin: 10,
     textAlign: "center",
-    fontSize: Theme.font.size + 6,
+    fontSize: Theme.font.size + 10,
     fontFamily: Theme.font.primary,
-    fontStyle: "normal",
-    fontWeight: "normal",
+    color: "white",
   },
   textSecondary: {
     fontStyle: "italic",
     fontWeight: "bold",
     textDecorationLine: "underline",
-  },
-});
-
-export const buttonStyles = StyleSheet.create({
-  button: {
-    backgroundColor: Theme.colors.buttonPrimary,
-    width: "60%",
-    alignSelf: "center",
-    height: 48,
-    padding: 5,
-    textAlign: "center",
-    fontFamily: Theme.font.primary,
-    fontStyle: "italic",
-    fontSize: Theme.font.size + 6,
   },
 });

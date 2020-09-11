@@ -3,28 +3,28 @@ import {
   useAddQuoteToUsersFavMutation,
   useRemoveQuoteFromUsersFavMutation,
 } from "../../generated/graphql";
-import { View, FlatList, ListRenderItemInfo } from "react-native";
-import { AuthContext } from "../../context/auth";
-import { QuoteListItem } from "../QuoteListItem";
-import { QuoteData, RefetchQuote } from "../../utils/interfaces/Quote";
-import { ActionTypes } from "../../context/actions";
+import {  FlatList, ListRenderItemInfo } from "react-native";
+import { AuthContext } from "../../state/context/auth";
+import { Index } from "../QuoteListItem";
+import { QuoteData, RefetchQuote } from "../../utils/interfaces";
+import { ActionTypes } from "../../state/actions/actions";
 type QueryQuoteData = QuoteData[] | undefined;
 
 interface Props {
   quotesData: QueryQuoteData;
   loading: boolean;
-  refetch: RefetchQuote;
+  handleRefetch: RefetchQuote;
 }
 
-export const QuoteList: React.FC<Props> = ({ quotesData, refetch }) => {
+export const QuoteList: React.FC<Props> = ({ quotesData, handleRefetch }) => {
   const { state, dispatch } = useContext(AuthContext);
   const [addQuoteToUsersFavMutation, ,] = useAddQuoteToUsersFavMutation({
     fetchPolicy: "no-cache",
-    onCompleted: () => refetch(),
+    onCompleted: () => handleRefetch(),
   });
   const [removeQuoteFromUsersFavMutation] = useRemoveQuoteFromUsersFavMutation({
     fetchPolicy: "no-cache",
-    onCompleted: () => refetch(),
+    onCompleted: () => handleRefetch(),
   });
 
   const addQuoteToFav = (id: string) => {
@@ -69,7 +69,7 @@ export const QuoteList: React.FC<Props> = ({ quotesData, refetch }) => {
   const renderItem = (quote: ListRenderItemInfo<QuoteData>) => {
     const { item } = quote;
     return (
-      <QuoteListItem
+      <Index
         quote={item}
         addQuoteToFav={addQuoteToFav}
         removeQuoteFromFav={removeQuoteFromFav}
@@ -79,8 +79,10 @@ export const QuoteList: React.FC<Props> = ({ quotesData, refetch }) => {
   };
 
   return (
-    <View>
-      <FlatList data={quotesData} renderItem={renderItem} />
-    </View>
+    <FlatList
+      data={quotesData}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+    />
   );
 };

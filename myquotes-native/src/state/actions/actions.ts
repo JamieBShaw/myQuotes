@@ -1,5 +1,5 @@
-import { StateQuote } from "../utils/interfaces/Quote";
-import { IUser } from "../utils/interfaces/User";
+import { StateQuote } from "../../utils/interfaces";
+import { IUser } from "../context/auth";
 
 export enum ActionTypes {
   addQuoteToUsersFavourites,

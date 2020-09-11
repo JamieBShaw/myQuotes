@@ -1,8 +1,9 @@
 import "react-native-gesture-handler";
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { ApolloProvider } from "@apollo/client";
+import { AppLoading } from "expo";
 import {
   useFonts,
   Philosopher_700Bold,
@@ -10,24 +11,44 @@ import {
   Philosopher_700Bold_Italic,
   Philosopher_400Regular_Italic,
 } from "@expo-google-fonts/philosopher";
+
 import MainStackNavigator from "./src/navigation/MainStackNavigator";
 import { client } from "./ApolloProvider";
-import { AuthContextProvider } from "./src/context/auth";
+import { AuthContextProvider } from "./src/state/context/auth";
+import { Asset } from "expo-asset";
+
+function cacheImages(images: any) {
+  return images.map((image: any) => {
+    if (typeof image === "string") {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
 
 const App = () => {
-  let [fontsLoaded] = useFonts({
+  const [ready, setReady] = useState(false);
+
+  const [fontsLoaded] = useFonts({
     Philosopher_400Regular_Italic,
     Philosopher_400Regular,
     Philosopher_700Bold_Italic,
     Philosopher_700Bold,
   });
 
-  if (!fontsLoaded) {
-    console.log("loading fonts...");
+  const _loadAssetsAsync = async () => {
+    const imageAssets = cacheImages([require("./assets/images/bg.jpg")]);
+    await Promise.all([...imageAssets]);
+  };
+
+  if (!fontsLoaded || !ready) {
     return (
-      <View>
-        <Text> Loading fonts..... </Text>
-      </View>
+      <AppLoading
+        startAsync={_loadAssetsAsync}
+        onFinish={() => setReady(true)}
+        onError={console.warn}
+      />
     );
   }
 

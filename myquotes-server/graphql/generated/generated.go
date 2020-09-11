@@ -732,8 +732,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "graphql/schema.graphql", Input: `# GraphQL schema example
-
+	&ast.Source{Name: "graphql/schema.graphql", Input: `
 scalar Time
 
 type Quote {
@@ -773,15 +772,6 @@ type User {
   updatedAt: Time!
 }
 
-
-#type Favourites {
-#  id: ID!
-#  user: User!
-#  itemType: Boolean!
-#  item_quote_id: String
-#  item_author_id: String
-#}
-
 type AuthToken {
   accessToken: String!
   expiredAt: Time!
@@ -800,7 +790,9 @@ input AuthorFilter {
   name: String
   creatorId: ID
   subject: String
+  dob: Time
   favCount: Int
+  CreatedAt: Time
 }
 
 input QuoteFilter {
@@ -808,6 +800,8 @@ input QuoteFilter {
   creatorId: ID
   subject: String
   favCount: Int
+  dateOf: Time
+  CreatedAt: Time
 }
 
 input RegisterInput {
@@ -877,15 +871,7 @@ type Mutation {
   editAuthorSubject(id: ID!, subject: String!): Author!
   editAuthorDOB(id: ID!, DOB: Time!): Author!
   editAuthorDOD(id: ID!, DOD: Time!): Author!
-
-  # TODO: Begin implementing delete functionality
-
-  # TODO: Begin implementing upvote/ like functionality for quotes and authors
-
-  # TODO: Begin implementing add quote/ author to favourite quote/author list functionality
-
-
-
+  
   addQuoteToFavourites(id: ID!): [Quote]!
   removeQuoteFromFavourites(id: ID!): [Quote]!
 
@@ -4475,9 +4461,21 @@ func (ec *executionContext) unmarshalInputAuthorFilter(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "dob":
+			var err error
+			it.Dob, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "favCount":
 			var err error
 			it.FavCount, err = ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+			it.CreatedAt, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4646,6 +4644,18 @@ func (ec *executionContext) unmarshalInputQuoteFilter(ctx context.Context, obj i
 		case "favCount":
 			var err error
 			it.FavCount, err = ec.unmarshalOInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "dateOf":
+			var err error
+			it.DateOf, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "CreatedAt":
+			var err error
+			it.CreatedAt, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
