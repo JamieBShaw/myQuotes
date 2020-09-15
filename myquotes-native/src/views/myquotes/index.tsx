@@ -1,24 +1,19 @@
 import React, { useContext } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { Header } from "../../components/Header/";
 import { AuthContext } from "../../state/context/auth";
 import { styles } from "./styles";
+import { QuoteList } from "../../components/QuoteList";
 
 const MyQuotes: React.FC = () => {
-  const { state } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <View style={styles.screen}>
-      <View style={styles.mainContainer}>
-        <Header title="My Quotes" />
-        <View style={{ backgroundColor: "red" }}>
-          {state.favouriteQuotes?.map((quote) => {
-            return (
-              <View style={styles.quoteContainer} key={quote?.id}>
-                <Text>{quote?.body}</Text>
-              </View>
-            );
-          })}
+      <View style={styles.outerContainer}>
+        <View style={styles.innerContainer}>
+          <Header title="My Quotes" signOut />
+          <QuoteList quotesData={user ? user.favouriteQuotes : undefined} />
         </View>
       </View>
     </View>

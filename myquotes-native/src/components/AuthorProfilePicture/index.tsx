@@ -1,15 +1,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Theme } from "../../../theme";
+
 
 interface Props {}
 
-export const AuthorProfileImage: React.FC<Props> = (props) => {
-  return <View></View>;
+export const AuthorProfileImage: React.FC<Props> = () => {
+  return <View style={styles.imageContainer}></View>;
 };
 
 // parent user overflow hidden to make sure child components stay within border circle
-// see Styling IMages udemy react natvive
+// see Styling IMages udemy react native
 
 const styles = StyleSheet.create({
   imageContainer: {

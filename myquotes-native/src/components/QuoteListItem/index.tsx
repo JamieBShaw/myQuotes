@@ -7,52 +7,65 @@ import { Theme } from "../../../theme";
 import { QuoteData } from "../../utils/interfaces";
 
 interface Props {
-  quote: QuoteData;
+  item: QuoteData;
   likedByUser: (quote: QuoteData) => boolean;
   addQuoteToFav: (id: string) => void;
   removeQuoteFromFav: (id: string) => void;
 }
 
+// const isQuoteData = (item: any): item is QuoteData => {
+//   return true;
+// };
+
 export const Index: React.FC<Props> = ({
-  quote,
+  item,
   addQuoteToFav,
   likedByUser,
   removeQuoteFromFav,
 }) => {
+  if (!item) {
+    return null;
+  }
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.body}>'{quote.body}'</Text>
+        <Text style={styles.body}>'{item.body}'</Text>
       </View>
 
       <View style={styles.secondaryContainer}>
         <Text style={styles.author}>
-          {quote.author.name} | {quote.favCount}
+          <Text style={{ fontWeight: "bold" }}> {item.author.name}</Text> |{" "}
+          <MaterialIcons
+            name="favorite"
+            size={14}
+            color={likedByUser(item) ? "red" : "black"}
+          />{" "}
+          {item.favCount}
         </Text>
         <View>
           <AppButton
             text={
-              likedByUser(quote) ? (
+              likedByUser(item) ? (
                 <MaterialIcons
                   name="remove-circle-outline"
-                  size={20}
+                  size={28}
                   color="black"
                 />
               ) : (
                 <MaterialIcons
                   name="add-circle-outline"
-                  size={20}
+                  size={28}
                   color="black"
                 />
               )
             }
             style={
-              likedByUser(quote) ? styles.secondaryButton : styles.primaryButton
+              likedByUser(item) ? styles.secondaryButton : styles.primaryButton
             }
             onPress={
-              likedByUser(quote)
-                ? () => removeQuoteFromFav(quote.id)
-                : () => addQuoteToFav(quote.id)
+              likedByUser(item)
+                ? () => removeQuoteFromFav(item.id)
+                : () => addQuoteToFav(item.id)
             }
           />
         </View>
@@ -74,6 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  buttonContainer: {},
+
   primaryButton: {
     marginTop: 10,
     backgroundColor: Theme.colors.background,
@@ -91,7 +106,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontFamily: Theme.font.primary,
-    fontSize: Theme.font.size - 4,
+    fontSize: Theme.font.size - 2,
     fontStyle: "italic",
   },
 

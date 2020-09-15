@@ -1,5 +1,6 @@
 query GetQuote($id: ID!) {
   quote(id: $id) {
+    __typename
     id
     body
     author {

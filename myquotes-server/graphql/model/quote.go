@@ -19,7 +19,7 @@ type Quote struct {
 }
 
 type QuoteRepository interface {
-	GetQuotes(filter *QuoteFilter) ([]*Quote, error)
+	GetQuotes(filter *QuoteFilter, limit *int, offset *int) ([]*Quote, error)
 	QuoteByID(id string) (*Quote, error)
 	QuoteByAuthor(author *Author) ([]*Quote, error)
 
@@ -29,6 +29,7 @@ type QuoteRepository interface {
 
 type QuoteFilter struct {
 	AuthorID  *string   `json:"authorId"`
+	AuthorIds []*string `json:"authorIDs"`
 	CreatorID *string   `json:"creatorId"`
 	Subject   *string   `json:"subject"`
 	FavCount  int32     `json:"favCount"`

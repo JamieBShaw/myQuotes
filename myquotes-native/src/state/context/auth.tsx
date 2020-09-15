@@ -2,8 +2,7 @@ import React, { createContext, Dispatch, useReducer } from "react";
 import { IUserActions } from "../actions/actions";
 import { authReducer } from "../reducer/authReducer";
 import { Scalars } from "../../generated/graphql";
-import { StateQuoteArray,  StateAuthorArray  } from "../../utils/interfaces";
-
+import { AuthorData, QuoteData } from "../../utils/interfaces";
 
 export interface IUser {
   __typename?: "user";
@@ -11,8 +10,8 @@ export interface IUser {
   username: Scalars["String"];
   email: Scalars["String"];
   isLoggedIn: Scalars["Boolean"];
-  favouriteQuotes?: Partial<StateQuoteArray>;
-  favouriteAuthors?: Partial<StateAuthorArray>;
+  favouriteQuotes?: Partial<Array<QuoteData>>;
+  favouriteAuthors?: Partial<Array<AuthorData>>;
 }
 
 export const userInitialState: IUser = {
@@ -26,17 +25,17 @@ export const userInitialState: IUser = {
 };
 
 interface AuthContext {
-  state: IUser;
+  user: IUser;
   dispatch: Dispatch<IUserActions>;
 }
 
 export const AuthContext = createContext({} as AuthContext);
 
 export const AuthContextProvider: React.FC = (props): JSX.Element => {
-  const [state, dispatch] = useReducer(authReducer, userInitialState);
+  const [user, dispatch] = useReducer(authReducer, userInitialState);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ user, dispatch }}>
       {props.children}
     </AuthContext.Provider>
   );

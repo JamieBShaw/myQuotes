@@ -18,7 +18,7 @@ type Author struct {
 }
 
 type AuthorRepository interface {
-	GetAuthors(filter *AuthorFilter) ([]*Author, error)
+	GetAuthors(filter *AuthorFilter, limit *int, offset *int) ([]*Author, error)
 
 	AuthorByID(id string) (*Author, error)
 	AuthorByQuote(quote *Quote) (*Author, error)

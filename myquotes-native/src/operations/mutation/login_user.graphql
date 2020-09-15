@@ -15,6 +15,7 @@ mutation LoginUser($input: LoginInput!) {
         favCount
         author {
           id
+          name
         }
         subject
         createdAt

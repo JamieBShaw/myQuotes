@@ -7,16 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-
-
-
-
-func (r *Repository) GetAuthors(filter *model.AuthorFilter) ([]*model.Author, error) {
+func (r *Repository) GetAuthors(filter *model.AuthorFilter, limit *int, offset *int) ([]*model.Author, error) {
 	log.Info(ARepo, " Getting Authors by subject and or name")
 
-	var author []*model.Author
+	var authors []*model.Author
 
-	query := r.DB.Model(&author)
+	query := r.DB.Model(&authors)
 
 	if filter != nil {
 
@@ -28,11 +24,18 @@ func (r *Repository) GetAuthors(filter *model.AuthorFilter) ([]*model.Author, er
 			query.Where("name ILIKE ?", fmt.Sprintf("%%%s%%", *filter.Name))
 		}
 	}
-	if err := query.Select(); err != nil {
+
+	if limit != nil && offset != nil {
+		query.Order("id").Limit(*limit).Offset(*offset)
+	}
+	err := query.Select()
+	if err != nil {
 		log.Error("Could not find author with required fields", err)
 		return nil, err
 	}
-	return author, nil
+
+	//uniqueAuthors := unique(authors)
+	return authors, nil
 }
 
 func (r *Repository) AuthorByID(id string) (*model.Author, error) {
@@ -100,4 +103,17 @@ func (r *Repository) UpdateByField(field, value, id string) (*model.Author, erro
 	log.Info("RESULT:   ", res)
 
 	return &author, nil
+}
+
+
+func unique(authors []*model.Author) []*model.Author {
+	keys := make(map[*model.Author]bool)
+	var list []*model.Author
+	for _, entry := range authors {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
 }

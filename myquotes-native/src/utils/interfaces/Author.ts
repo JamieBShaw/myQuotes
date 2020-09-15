@@ -1,7 +1,15 @@
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Author, Quote, User } from "../../generated/graphql";
+import {
+  Author,
+  Quote,
+  User,
+  Exact,
+  AuthorFilter,
+  GetAuthorsQuery,
+} from "../../generated/graphql";
+import { ApolloQueryResult } from "@apollo/client";
 
-export type StateAuthor =
+export type AuthorData =
   | Maybe<
       {
         __typename?: "Author" | undefined;
@@ -20,4 +28,12 @@ export type StateAuthor =
   | null
   | undefined;
 
-export type StateAuthorArray = StateAuthor[];
+export type RefetchAuthor = (
+  variables?:
+    | Partial<
+        Exact<{
+          input: AuthorFilter;
+        }>
+      >
+    | undefined
+) => Promise<ApolloQueryResult<GetAuthorsQuery>>;

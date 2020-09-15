@@ -87,13 +87,14 @@ type ComplexityRoot struct {
 		RegisterUser               func(childComplexity int, input model.RegisterInput) int
 		RemoveAuthorFromFavourites func(childComplexity int, id string) int
 		RemoveQuoteFromFavourites  func(childComplexity int, id string) int
+		SetExpoNotifcationToken    func(childComplexity int, id string) int
 	}
 
 	Query struct {
 		Author  func(childComplexity int, id string) int
-		Authors func(childComplexity int, filter *model.AuthorFilter) int
+		Authors func(childComplexity int, filter *model.AuthorFilter, limit *int, offset *int) int
 		Quote   func(childComplexity int, id string) int
-		Quotes  func(childComplexity int, filter *model.QuoteFilter) int
+		Quotes  func(childComplexity int, filter *model.QuoteFilter, limit *int, offset *int) int
 		User    func(childComplexity int, id string) int
 		Users   func(childComplexity int, filter *model.UserFilter) int
 	}
@@ -132,6 +133,7 @@ type AuthorResolver interface {
 type MutationResolver interface {
 	RegisterUser(ctx context.Context, input model.RegisterInput) (*model.AuthPayload, error)
 	LoginUser(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error)
+	SetExpoNotifcationToken(ctx context.Context, id string) (bool, error)
 	CreateQuote(ctx context.Context, input model.QuoteCreateInput) (*model.Quote, error)
 	CreateAuthor(ctx context.Context, input model.AuthorCreateInput) (*model.Author, error)
 	EditQuoteBody(ctx context.Context, id string, body string) (*model.Quote, error)
@@ -151,9 +153,9 @@ type QueryResolver interface {
 	User(ctx context.Context, id string) (*model.User, error)
 	Users(ctx context.Context, filter *model.UserFilter) ([]*model.User, error)
 	Quote(ctx context.Context, id string) (*model.Quote, error)
-	Quotes(ctx context.Context, filter *model.QuoteFilter) ([]*model.Quote, error)
+	Quotes(ctx context.Context, filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error)
 	Author(ctx context.Context, id string) (*model.Author, error)
-	Authors(ctx context.Context, filter *model.AuthorFilter) ([]*model.Author, error)
+	Authors(ctx context.Context, filter *model.AuthorFilter, limit *int, offset *int) ([]*model.Author, error)
 }
 type QuoteResolver interface {
 	Author(ctx context.Context, obj *model.Quote) (*model.Author, error)
@@ -470,6 +472,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveQuoteFromFavourites(childComplexity, args["id"].(string)), true
 
+	case "Mutation.setExpoNotifcationToken":
+		if e.complexity.Mutation.SetExpoNotifcationToken == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setExpoNotifcationToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetExpoNotifcationToken(childComplexity, args["id"].(string)), true
+
 	case "Query.author":
 		if e.complexity.Query.Author == nil {
 			break
@@ -492,7 +506,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Authors(childComplexity, args["filter"].(*model.AuthorFilter)), true
+		return e.complexity.Query.Authors(childComplexity, args["filter"].(*model.AuthorFilter), args["limit"].(*int), args["offset"].(*int)), true
 
 	case "Query.quote":
 		if e.complexity.Query.Quote == nil {
@@ -516,7 +530,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Quotes(childComplexity, args["filter"].(*model.QuoteFilter)), true
+		return e.complexity.Query.Quotes(childComplexity, args["filter"].(*model.QuoteFilter), args["limit"].(*int), args["offset"].(*int)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -797,6 +811,7 @@ input AuthorFilter {
 
 input QuoteFilter {
   authorId: ID
+  authorIds: [ID]
   creatorId: ID
   subject: String
   favCount: Int
@@ -848,16 +863,18 @@ type Query {
   users(filter: UserFilter): [User!]!
 
   quote(id: ID!): Quote!
-  quotes(filter: QuoteFilter): [Quote!]!
+  quotes(filter: QuoteFilter, limit: Int, offset: Int): [Quote!]!
 
   author(id: ID!): Author!
-  authors(filter: AuthorFilter): [Author!]!
+  authors(filter: AuthorFilter, limit: Int, offset: Int): [Author!]!
 
 }
 
 type Mutation {
   registerUser(input: RegisterInput!): AuthPayload!
   loginUser(input: LoginInput!): AuthPayload!
+
+  setExpoNotifcationToken(id: ID!): Boolean!
 
   createQuote(input: QuoteCreateInput!): Quote!
   createAuthor(input: AuthorCreateInput!): Author!
@@ -1174,6 +1191,20 @@ func (ec *executionContext) field_Mutation_removeQuoteFromFavourites_args(ctx co
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_setExpoNotifcationToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1213,6 +1244,22 @@ func (ec *executionContext) field_Query_authors_args(ctx context.Context, rawArg
 		}
 	}
 	args["filter"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["offset"]; ok {
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg2
 	return args, nil
 }
 
@@ -1241,6 +1288,22 @@ func (ec *executionContext) field_Query_quotes_args(ctx context.Context, rawArgs
 		}
 	}
 	args["filter"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["offset"]; ok {
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg2
 	return args, nil
 }
 
@@ -1861,6 +1924,47 @@ func (ec *executionContext) _Mutation_loginUser(ctx context.Context, field graph
 	res := resTmp.(*model.AuthPayload)
 	fc.Result = res
 	return ec.marshalNAuthPayload2ᚖgithubᚗcomᚋJamieBShawᚋmyquotesᚑserverᚋgraphqlᚋmodelᚐAuthPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_setExpoNotifcationToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_setExpoNotifcationToken_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetExpoNotifcationToken(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createQuote(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2584,7 +2688,7 @@ func (ec *executionContext) _Query_quotes(ctx context.Context, field graphql.Col
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Quotes(rctx, args["filter"].(*model.QuoteFilter))
+		return ec.resolvers.Query().Quotes(rctx, args["filter"].(*model.QuoteFilter), args["limit"].(*int), args["offset"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2666,7 +2770,7 @@ func (ec *executionContext) _Query_authors(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Authors(rctx, args["filter"].(*model.AuthorFilter))
+		return ec.resolvers.Query().Authors(rctx, args["filter"].(*model.AuthorFilter), args["limit"].(*int), args["offset"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4629,6 +4733,12 @@ func (ec *executionContext) unmarshalInputQuoteFilter(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
+		case "authorIds":
+			var err error
+			it.AuthorIds, err = ec.unmarshalOID2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "creatorId":
 			var err error
 			it.CreatorID, err = ec.unmarshalOID2ᚖstring(ctx, v)
@@ -4909,6 +5019,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "loginUser":
 			out.Values[i] = ec._Mutation_loginUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "setExpoNotifcationToken":
+			out.Values[i] = ec._Mutation_setExpoNotifcationToken(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -6171,6 +6286,38 @@ func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.Selec
 	return graphql.MarshalID(v)
 }
 
+func (ec *executionContext) unmarshalOID2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalOID2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOID2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOID2ᚖstring(ctx, sel, v[i])
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -6186,12 +6333,35 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	return ec.marshalOID2string(ctx, sel, *v)
 }
 
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	return graphql.MarshalInt(v)
+}
+
 func (ec *executionContext) unmarshalOInt2int32(ctx context.Context, v interface{}) (int32, error) {
 	return graphql.UnmarshalInt32(v)
 }
 
 func (ec *executionContext) marshalOInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
 	return graphql.MarshalInt32(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v interface{}) (*int32, error) {

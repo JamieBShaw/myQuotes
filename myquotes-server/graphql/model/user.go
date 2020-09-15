@@ -14,8 +14,7 @@ type User struct {
 	Email            string    `json:"email" validate:"required,email"`
 	Password         string    `json:"password" validate:"required"`
 	IsLoggedIn       bool      `json:"isLoggedIn"`
-	//FavouriteQuotes  []*Quote  `json:"favouriteQuotes"`
-	//FavouriteAuthors []*Author `json:"favouriteAuthors"`
+	ExpoNotificationToken string `json:"expoNotificationToken"`
 	CreatedAt        time.Time `json:"-"`
 	UpdatedAt        time.Time `json:"-"`
 }

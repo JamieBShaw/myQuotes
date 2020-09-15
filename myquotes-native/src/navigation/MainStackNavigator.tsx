@@ -2,17 +2,24 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginView from "../views/auth/login";
-import MainTabNavigation from "./MainTabNavigation";
+import { MainTabNavigation } from "./MainTabNavigation";
 import RegisterView from "../views/auth/register";
-import { checkTokenExistsOnStartUp } from "../utils/token";
+// import { checkTokenExistsOnStartUp } from "../utils/token";
 
 const MainStack = createStackNavigator();
 
 let initialRoute = "Login";
 
-checkTokenExistsOnStartUp(initialRoute);
+interface Props {
+  token?: string | undefined | null | "";
+}
 
-const MainStackNavigator = () => {
+const MainStackNavigator: React.FC<Props> = () => {
+  // console.log("TOKEN: ", token);
+  // if (token) {
+  //   initialRoute = "home";
+  // }
+
   return (
     <MainStack.Navigator headerMode="none" initialRouteName={initialRoute}>
       <MainStack.Screen name="Login" component={LoginView} />

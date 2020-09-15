@@ -28,7 +28,35 @@ const authLink = setContext(async (_, { headers }: headerProps) => {
   };
 });
 
+const casheee = new InMemoryCache({
+  typePolicies: {
+    Quote: {
+      keyFields: ["id", "author", ["id"]],
+    },
+    Author: {
+      keyFields: ["id"],
+    },
+    User: {
+      keyFields: ["id"],
+      fields: {
+        favouriteQuotes: {
+          merge(_ignored, incoming) {
+            return incoming;
+          },
+        },
+        favouriteAuthors: {
+          merge(_ignored, incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+  },
+});
+
+// const normCashee = new InMemoryCache();
+
 export const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: casheee,
 });

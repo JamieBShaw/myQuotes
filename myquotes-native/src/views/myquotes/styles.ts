@@ -5,17 +5,15 @@ export const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  mainContainer: {
+  outerContainer: {
     width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: Theme.font.primary,
-    color: Theme.colors.textPrimary,
+    height: "100%",
     backgroundColor: Theme.colors.background,
-    padding: 10,
-    marginBottom: 40,
   },
-
+  innerContainer: {
+    padding: 10,
+    marginBottom: 30,
+  },
   quoteContainer: {
     backgroundColor: Theme.colors.background,
     borderBottomColor: "black",

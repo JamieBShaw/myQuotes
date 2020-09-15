@@ -2,12 +2,12 @@ mutation AddQuoteToUsersFav($id: ID!) {
   addQuoteToFavourites(id: $id) {
     id
     body
-    favCount
+    subject
     author {
       id
+      name
     }
-    subject
-    createdAt
-    updatedAt
+
+    favCount
   }
 }

@@ -7,21 +7,20 @@ export const styles = StyleSheet.create({
   },
   outerContainer: {
     width: "100%",
+    height: "100%",
     backgroundColor: Theme.colors.background,
-    //  padding: 10,
-    //     borderColor: "black",
-    //     borderWidth: 1
   },
   innerContainer: {
     padding: 10,
-    borderColor: "black",
-    borderWidth: 1,
+    marginBottom: 30,
   },
   searchContainer: {
     height: 50,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    margin: 5,
+    padding: 5,
   },
   searchInput: {
     height: 45,

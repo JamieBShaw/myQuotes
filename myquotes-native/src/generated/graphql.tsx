@@ -12,89 +12,6 @@ export type Scalars = {
   Time: any;
 };
 
-export type RegisterInput = {
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-};
-
-export type AuthToken = {
-  __typename?: 'AuthToken';
-  accessToken: Scalars['String'];
-  expiredAt: Scalars['Time'];
-};
-
-export type AuthPayload = {
-  __typename?: 'AuthPayload';
-  authToken: AuthToken;
-  user: User;
-};
-
-export type QuoteCreateInput = {
-  body: Scalars['String'];
-  authorId: Scalars['ID'];
-  dateOf: Scalars['Time'];
-  subject: Scalars['String'];
-};
-
-export type AuthorCreateInput = {
-  name: Scalars['String'];
-  DOD: Scalars['Time'];
-  DOB: Scalars['Time'];
-};
-
-export type EditAuthor = {
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type EditQuote = {
-  id: Scalars['ID'];
-  body?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
-  dateOf?: Maybe<Scalars['Time']>;
-  subject?: Maybe<Scalars['String']>;
-};
-
-export type QuoteFilter = {
-  authorId?: Maybe<Scalars['ID']>;
-  creatorId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-  favCount?: Maybe<Scalars['Int']>;
-};
-
-
-export type Author = {
-  __typename?: 'Author';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  subject?: Maybe<Scalars['String']>;
-  DOB: Scalars['Time'];
-  DOD: Scalars['Time'];
-  favCount: Scalars['Int'];
-  quotes: Array<Quote>;
-  user: User;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
-};
-
-export type UserFilter = {
-  username?: Maybe<Scalars['String']>;
-};
-
-export type AuthorFilter = {
-  name?: Maybe<Scalars['String']>;
-  creatorId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-  favCount?: Maybe<Scalars['Int']>;
-};
-
-export type LoginInput = {
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
-};
 
 export type Quote = {
   __typename?: 'Quote';
@@ -109,17 +26,27 @@ export type Quote = {
   updatedAt: Scalars['Time'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  isLoggedIn: Scalars['Boolean'];
-  favouriteQuotes?: Maybe<Array<Maybe<Quote>>>;
-  favouriteAuthors?: Maybe<Array<Maybe<Author>>>;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
+export type AuthToken = {
+  __typename?: 'AuthToken';
+  accessToken: Scalars['String'];
+  expiredAt: Scalars['Time'];
+};
+
+export type QuoteFilter = {
+  authorId?: Maybe<Scalars['ID']>;
+  authorIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  creatorId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+  favCount?: Maybe<Scalars['Int']>;
+  dateOf?: Maybe<Scalars['Time']>;
+  CreatedAt?: Maybe<Scalars['Time']>;
+};
+
+export type QuoteCreateInput = {
+  body: Scalars['String'];
+  authorId: Scalars['ID'];
+  dateOf: Scalars['Time'];
+  subject: Scalars['String'];
 };
 
 export type Query = {
@@ -150,6 +77,8 @@ export type QueryQuoteArgs = {
 
 export type QueryQuotesArgs = {
   filter?: Maybe<QuoteFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -160,12 +89,49 @@ export type QueryAuthorArgs = {
 
 export type QueryAuthorsArgs = {
   filter?: Maybe<AuthorFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+export type AuthorCreateInput = {
+  name: Scalars['String'];
+  DOD: Scalars['Time'];
+  DOB: Scalars['Time'];
+};
+
+export type Author = {
+  __typename?: 'Author';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  subject?: Maybe<Scalars['String']>;
+  DOB: Scalars['Time'];
+  DOD: Scalars['Time'];
+  favCount: Scalars['Int'];
+  quotes: Array<Quote>;
+  user: User;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
+
+export type EditQuote = {
+  id: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['String']>;
+  dateOf?: Maybe<Scalars['Time']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type EditAuthor = {
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   registerUser: AuthPayload;
   loginUser: AuthPayload;
+  setExpoNotifcationToken: Scalars['Boolean'];
   createQuote: Quote;
   createAuthor: Author;
   editQuoteBody: Quote;
@@ -190,6 +156,11 @@ export type MutationRegisterUserArgs = {
 
 export type MutationLoginUserArgs = {
   input: LoginInput;
+};
+
+
+export type MutationSetExpoNotifcationTokenArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -270,6 +241,50 @@ export type MutationRemoveAuthorFromFavouritesArgs = {
   id: Scalars['ID'];
 };
 
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  authToken: AuthToken;
+  user: User;
+};
+
+export type UserFilter = {
+  username?: Maybe<Scalars['String']>;
+};
+
+export type AuthorFilter = {
+  name?: Maybe<Scalars['String']>;
+  creatorId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['Time']>;
+  favCount?: Maybe<Scalars['Int']>;
+  CreatedAt?: Maybe<Scalars['Time']>;
+};
+
+export type RegisterInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  confirmPassword: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  isLoggedIn: Scalars['Boolean'];
+  favouriteQuotes?: Maybe<Array<Maybe<Quote>>>;
+  favouriteAuthors?: Maybe<Array<Maybe<Author>>>;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
+
+export type LoginInput = {
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type AddQuoteToUsersFavMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -279,10 +294,10 @@ export type AddQuoteToUsersFavMutation = (
   { __typename?: 'Mutation' }
   & { addQuoteToFavourites: Array<Maybe<(
     { __typename?: 'Quote' }
-    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject' | 'createdAt' | 'updatedAt'>
+    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject'>
     & { author: (
       { __typename?: 'Author' }
-      & Pick<Author, 'id'>
+      & Pick<Author, 'id' | 'name'>
     ) }
   )>> }
 );
@@ -307,7 +322,7 @@ export type LoginUserMutation = (
         & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject' | 'createdAt' | 'updatedAt'>
         & { author: (
           { __typename?: 'Author' }
-          & Pick<Author, 'id'>
+          & Pick<Author, 'id' | 'name'>
         ) }
       )>>>, favouriteAuthors?: Maybe<Array<Maybe<(
         { __typename?: 'Author' }
@@ -344,7 +359,7 @@ export type RegisterUserMutation = (
         & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject' | 'createdAt' | 'updatedAt'>
         & { author: (
           { __typename?: 'Author' }
-          & Pick<Author, 'id'>
+          & Pick<Author, 'id' | 'name'>
         ) }
       )>>>, favouriteAuthors?: Maybe<Array<Maybe<(
         { __typename?: 'Author' }
@@ -370,12 +385,25 @@ export type RemoveQuoteFromUsersFavMutation = (
   { __typename?: 'Mutation' }
   & { removeQuoteFromFavourites: Array<Maybe<(
     { __typename?: 'Quote' }
-    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject' | 'createdAt' | 'updatedAt'>
+    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject'>
     & { author: (
       { __typename?: 'Author' }
-      & Pick<Author, 'id'>
+      & Pick<Author, 'id' | 'name'>
     ) }
   )>> }
+);
+
+export type GetAuthorsQueryVariables = Exact<{
+  input: AuthorFilter;
+}>;
+
+
+export type GetAuthorsQuery = (
+  { __typename?: 'Query' }
+  & { authors: Array<(
+    { __typename: 'Author' }
+    & Pick<Author, 'id' | 'name'>
+  )> }
 );
 
 export type GetQuoteQueryVariables = Exact<{
@@ -386,7 +414,7 @@ export type GetQuoteQueryVariables = Exact<{
 export type GetQuoteQuery = (
   { __typename?: 'Query' }
   & { quote: (
-    { __typename?: 'Quote' }
+    { __typename: 'Quote' }
     & Pick<Quote, 'id' | 'body' | 'favCount'>
     & { author: (
       { __typename?: 'Author' }
@@ -395,14 +423,16 @@ export type GetQuoteQuery = (
   ) }
 );
 
-export type GetQuotesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetQuotesQueryVariables = Exact<{
+  input: QuoteFilter;
+}>;
 
 
 export type GetQuotesQuery = (
   { __typename?: 'Query' }
   & { quotes: Array<(
-    { __typename?: 'Quote' }
-    & Pick<Quote, 'id' | 'body' | 'favCount'>
+    { __typename: 'Quote' }
+    & Pick<Quote, 'id' | 'body' | 'subject' | 'favCount'>
     & { author: (
       { __typename?: 'Author' }
       & Pick<Author, 'id' | 'name'>
@@ -432,10 +462,9 @@ export const AddQuoteToUsersFavDocument = gql`
     favCount
     author {
       id
+      name
     }
     subject
-    createdAt
-    updatedAt
   }
 }
     `;
@@ -482,6 +511,7 @@ export const LoginUserDocument = gql`
         favCount
         author {
           id
+          name
         }
         subject
         createdAt
@@ -547,6 +577,7 @@ export const RegisterUserDocument = gql`
         favCount
         author {
           id
+          name
         }
         subject
         createdAt
@@ -602,10 +633,9 @@ export const RemoveQuoteFromUsersFavDocument = gql`
     favCount
     author {
       id
+      name
     }
     subject
-    createdAt
-    updatedAt
   }
 }
     `;
@@ -634,9 +664,45 @@ export function useRemoveQuoteFromUsersFavMutation(baseOptions?: Apollo.Mutation
 export type RemoveQuoteFromUsersFavMutationHookResult = ReturnType<typeof useRemoveQuoteFromUsersFavMutation>;
 export type RemoveQuoteFromUsersFavMutationResult = Apollo.MutationResult<RemoveQuoteFromUsersFavMutation>;
 export type RemoveQuoteFromUsersFavMutationOptions = Apollo.BaseMutationOptions<RemoveQuoteFromUsersFavMutation, RemoveQuoteFromUsersFavMutationVariables>;
+export const GetAuthorsDocument = gql`
+    query GetAuthors($input: AuthorFilter!) {
+  authors(filter: $input) {
+    __typename
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetAuthorsQuery__
+ *
+ * To run a query within a React component, call `useGetAuthorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAuthorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAuthorsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAuthorsQuery(baseOptions?: Apollo.QueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
+        return Apollo.useQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(GetAuthorsDocument, baseOptions);
+      }
+export function useGetAuthorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(GetAuthorsDocument, baseOptions);
+        }
+export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
+export type GetAuthorsLazyQueryHookResult = ReturnType<typeof useGetAuthorsLazyQuery>;
+export type GetAuthorsQueryResult = Apollo.QueryResult<GetAuthorsQuery, GetAuthorsQueryVariables>;
 export const GetQuoteDocument = gql`
     query GetQuote($id: ID!) {
   quote(id: $id) {
+    __typename
     id
     body
     author {
@@ -674,10 +740,12 @@ export type GetQuoteQueryHookResult = ReturnType<typeof useGetQuoteQuery>;
 export type GetQuoteLazyQueryHookResult = ReturnType<typeof useGetQuoteLazyQuery>;
 export type GetQuoteQueryResult = Apollo.QueryResult<GetQuoteQuery, GetQuoteQueryVariables>;
 export const GetQuotesDocument = gql`
-    query GetQuotes {
-  quotes(filter: {}) {
+    query GetQuotes($input: QuoteFilter!) {
+  quotes(filter: $input) {
+    __typename
     id
     body
+    subject
     author {
       id
       name
@@ -699,6 +767,7 @@ export const GetQuotesDocument = gql`
  * @example
  * const { data, loading, error } = useGetQuotesQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */

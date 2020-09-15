@@ -1,7 +1,23 @@
-query GetQuotes {
-  quotes(filter: {}) {
+# query GetQuotes($input: QuoteFilter!, $offset: Int, $limit: Int) {
+#   quotes(filter: $input, offset: $offset, limit: $limit) {
+#     __typename
+#     id
+#     body
+#     subject
+#     author {
+#       id
+#       name
+#     }
+#     favCount
+#   }
+# }
+
+query GetQuotes($input: QuoteFilter!) {
+  quotes(filter: $input) {
+    __typename
     id
     body
+    subject
     author {
       id
       name

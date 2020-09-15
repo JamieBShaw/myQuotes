@@ -3,6 +3,7 @@ package resolver
 import (
 	"context"
 	"errors"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/JamieBShaw/myquotes-server/graphql/generated"
@@ -11,8 +12,15 @@ import (
 
 type mutationResolver struct{ *Resolver }
 
+
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+
+func (r *mutationResolver) SetExpoNotifcationToken(ctx context.Context, id string) (bool, error) {
+	log.Info("SETTING USERS EXPO PUSH TOKEN")
+	return true, nil
+}
 
 func (r *mutationResolver) AddQuoteToFavourites(ctx context.Context, id string) ([]*model.Quote, error) {
 	return r.Auth.AddQuoteToFavourites(ctx, id)

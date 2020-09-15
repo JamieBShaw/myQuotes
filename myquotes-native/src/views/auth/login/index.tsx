@@ -1,13 +1,12 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   Keyboard,
-  Image,
   StatusBar,
   Dimensions,
+  ImageBackground,
 } from "react-native";
-import Animated from "react-native-reanimated";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useLoginUserMutation, LoginInput } from "../../../generated/graphql";
 import { ApolloError } from "@apollo/client";
@@ -19,6 +18,7 @@ import { setUserToken } from "../../../utils/token";
 import { AuthContext } from "../../../state/context/auth";
 import { ActionTypes } from "../../../state/actions/actions";
 import { GraphQLError } from "graphql";
+import { useNavigation } from "@react-navigation/native";
 
 const initialState: LoginInput = {
   usernameOrEmail: "",
@@ -28,23 +28,14 @@ const loginErrInitialState = initialState;
 
 const { height, width } = Dimensions.get("window");
 
-const { Value, interpolate, Extrapolate } = Animated;
-
-const LoginView: React.FC = ({ navigation }: any) => {
+const LoginView: React.FC = () => {
+  const nav = useNavigation();
   const { dispatch } = useContext(AuthContext);
   const [inputs, setInputs] = useState(initialState);
   const [err, setErr] = useState(false);
   const [inputErrors, setInputErrors] = useState(loginErrInitialState);
   const [loginUserMutation] = useLoginUserMutation();
 
-  const buttonOpacity = useRef(new Value(1));
-  const buttonY = useRef(
-    interpolate(buttonOpacity.current, {
-      inputRange: [0, 1],
-      outputRange: [100, 0],
-      extrapolate: Extrapolate.CLAMP,
-    })
-  );
   const handleSubmit = (e: any) => {
     e.preventDefault();
     Keyboard.dismiss();
@@ -74,10 +65,7 @@ const LoginView: React.FC = ({ navigation }: any) => {
               favouriteAuthors: user.favouriteAuthors!,
             },
           });
-
-          setUserToken(authToken.accessToken).then(() =>
-            navigation.navigate("Home")
-          );
+          setUserToken(authToken.accessToken).then(() => nav.navigate("Home"));
         }
       })
       .catch((e: ApolloError) => {
@@ -107,7 +95,7 @@ const LoginView: React.FC = ({ navigation }: any) => {
         }}
       >
         <View style={styles.imageContainer}>
-          <Image
+          <ImageBackground
             style={{ height: height, width: width }}
             source={require("../../../../assets/images/bg.jpg")}
           />
@@ -117,7 +105,6 @@ const LoginView: React.FC = ({ navigation }: any) => {
             <AppTextInput
               placeholder="Username or Email"
               name="usernameOrEmail"
-              blurOnSubmit
               keyboardType="email-address"
               onError={err}
               value={inputs.usernameOrEmail}
@@ -127,7 +114,6 @@ const LoginView: React.FC = ({ navigation }: any) => {
           <View style={styles.textInput}>
             <AppTextInput
               secureTextEntry
-              blurOnSubmit
               onError={err}
               errorMessage={
                 inputErrors
@@ -153,23 +139,17 @@ const LoginView: React.FC = ({ navigation }: any) => {
             text="Login"
             onPress={handleSubmit}
           />
-          <Animated.View
-            style={{
-              ...styles.textContainer,
-              opacity: buttonOpacity.current,
-              translateY: buttonY.current,
-            }}
-          >
+          <View>
             <Text style={styles.text}>
               Or if you don't have an account yet,{" "}
               <Text
-                onPress={() => navigation.navigate("Register")}
+                onPress={() => nav.navigate("Register")}
                 style={styles.textSecondary}
               >
                 register here.
               </Text>
             </Text>
-          </Animated.View>
+          </View>
         </View>
 
         <StatusBar hidden />

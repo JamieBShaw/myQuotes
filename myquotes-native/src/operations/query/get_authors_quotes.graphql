@@ -1,0 +1,7 @@
+query GetAuthors($input: AuthorFilter!) {
+  authors(filter: $input) {
+    __typename
+    id
+    name
+  }
+}

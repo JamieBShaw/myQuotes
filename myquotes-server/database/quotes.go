@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
-
+	"github.com/go-pg/pg/v10"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -10,7 +10,7 @@ import (
 
 
 
-func (r *Repository) GetQuotes(filter *model.QuoteFilter) ([]*model.Quote, error) {
+func (r *Repository) GetQuotes(filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
 	log.Info(QRepo, " Getting quote(s) by author_id and or subject")
 
 	var quotes []*model.Quote
@@ -23,6 +23,20 @@ func (r *Repository) GetQuotes(filter *model.QuoteFilter) ([]*model.Quote, error
 		}
 		if filter.Subject != nil && *filter.Subject != "" {
 			query.Where("subject = ?", filter.Subject)
+		}
+
+		if filter.AuthorIds != nil {
+			log.Info("Author IDs is not null........................")
+			var ids []string
+			for _, authorID := range filter.AuthorIds {
+				ids = append(ids, *authorID)
+			}
+			log.Info("AUTHOR IDS ARRAY:  ", &ids)
+			if len(ids) == 0 {
+				log.Warn("User currently has no favourites")
+				return nil, nil
+			}
+			query.Where("author_id in (?)", pg.In(ids)).Order("id")
 		}
 	}
 	if err := query.Select(); err != nil {

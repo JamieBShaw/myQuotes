@@ -1,4 +1,4 @@
-import { StateQuote } from "../../utils/interfaces";
+import { QuoteData } from "../../utils/interfaces";
 import { IUser } from "../context/auth";
 
 export enum ActionTypes {
@@ -11,7 +11,7 @@ export enum ActionTypes {
 
 export interface AddQuoteToUserFav {
   type: ActionTypes.addQuoteToUsersFavourites;
-  payload: StateQuote;
+  payload: QuoteData;
 }
 
 export interface RemoveQuoteFromUsersFav {

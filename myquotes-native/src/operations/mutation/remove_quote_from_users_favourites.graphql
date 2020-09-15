@@ -2,12 +2,12 @@ mutation RemoveQuoteFromUsersFav($id: ID!) {
   removeQuoteFromFavourites(id: $id) {
     id
     body
-    favCount
+    subject
     author {
       id
+      name
     }
-    subject
-    createdAt
-    updatedAt
+
+    favCount
   }
 }

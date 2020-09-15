@@ -202,6 +202,8 @@ func (a *Auth) AddQuoteToFavourites(ctx context.Context, id string) ([]*model.Qu
 		log.Error("Error:   ", err)
 		return nil, GenericErr
 	}
+
+	log.Info("Here are the users favourite quotes   ", &quotes)
 	return quotes, nil
 }
 

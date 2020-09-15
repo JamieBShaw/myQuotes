@@ -1,30 +1,51 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   useAddQuoteToUsersFavMutation,
   useRemoveQuoteFromUsersFavMutation,
+  GetQuotesQuery,
+  useGetQuotesQuery,
+  GetQuotesDocument,
 } from "../../generated/graphql";
-import {  FlatList, ListRenderItemInfo } from "react-native";
+import {
+  FlatList,
+  ListRenderItemInfo,
+  View,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { AuthContext } from "../../state/context/auth";
 import { Index } from "../QuoteListItem";
 import { QuoteData, RefetchQuote } from "../../utils/interfaces";
 import { ActionTypes } from "../../state/actions/actions";
-type QueryQuoteData = QuoteData[] | undefined;
+import { ActivityIndicator } from "react-native-paper";
+import { getQueryDefinition } from "@apollo/client/utilities";
 
 interface Props {
-  quotesData: QueryQuoteData;
-  loading: boolean;
-  handleRefetch: RefetchQuote;
+  quotesData: QuoteData[] | undefined;
+  loading?: boolean;
+  handleRefetch?: RefetchQuote;
 }
 
-export const QuoteList: React.FC<Props> = ({ quotesData, handleRefetch }) => {
-  const { state, dispatch } = useContext(AuthContext);
-  const [addQuoteToUsersFavMutation, ,] = useAddQuoteToUsersFavMutation({
+export const QuoteList: React.FC<Props> = ({
+  quotesData,
+  handleRefetch,
+  loading,
+}) => {
+  if (!handleRefetch) {
+    handleRefetch = undefined;
+  }
+  const { user, dispatch } = useContext(AuthContext);
+  const [addQuoteToUsersFavMutation] = useAddQuoteToUsersFavMutation({
     fetchPolicy: "no-cache",
-    onCompleted: () => handleRefetch(),
+    onCompleted: () => {
+      handleRefetch ? handleRefetch!() : undefined;
+    },
   });
   const [removeQuoteFromUsersFavMutation] = useRemoveQuoteFromUsersFavMutation({
     fetchPolicy: "no-cache",
-    onCompleted: () => handleRefetch(),
+    onCompleted: () => {
+      handleRefetch ? handleRefetch!() : undefined;
+    },
   });
 
   const addQuoteToFav = (id: string) => {
@@ -59,7 +80,7 @@ export const QuoteList: React.FC<Props> = ({ quotesData, handleRefetch }) => {
   };
 
   const likedByUser = (quote: QuoteData): boolean => {
-    if (state && state.favouriteQuotes?.find((q) => quote.id === q?.id)) {
+    if (user && user.favouriteQuotes?.find((q) => quote!.id === q?.id)) {
       return true;
     } else {
       return false;
@@ -68,9 +89,10 @@ export const QuoteList: React.FC<Props> = ({ quotesData, handleRefetch }) => {
 
   const renderItem = (quote: ListRenderItemInfo<QuoteData>) => {
     const { item } = quote;
+
     return (
       <Index
-        quote={item}
+        item={item}
         addQuoteToFav={addQuoteToFav}
         removeQuoteFromFav={removeQuoteFromFav}
         likedByUser={likedByUser}
@@ -78,11 +100,40 @@ export const QuoteList: React.FC<Props> = ({ quotesData, handleRefetch }) => {
     );
   };
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          ...StyleSheet.absoluteFillObject,
+          paddingTop: 100,
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={quotesData}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item!.id}
+      ListEmptyComponent={() => (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 100,
+          }}
+        >
+          <Text>No Quotes Found...</Text>
+        </View>
+      )}
     />
   );
 };
