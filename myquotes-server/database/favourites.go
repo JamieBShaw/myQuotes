@@ -73,7 +73,6 @@ func (r *Repository) AddQuoteToUsersFavourites(userID, quoteID string) error {
 		UserID:  userID,
 		QuoteID: quoteID,
 	}
-
 	var quote model.Quote
 
 	_, err := r.DB.Model(favQuote).Where("user_id = ?", userID).Where("quote_id = ?", quoteID).Order("id").SelectOrInsert()
@@ -129,26 +128,52 @@ func (r *Repository) RemoveQuoteFromUsersFavourites(userID, quoteID string) erro
 }
 
 func (r *Repository) AddAuthorToUsersFavourites(userID, authorID string) error {
+
 	favAuthor := &model.FavouriteAuthors{
 		UserID:   userID,
 		AuthorID: authorID,
 	}
+	var author model.Author
 
-	_, err := r.DB.Model(favAuthor).Insert()
+	_, err := r.DB.Model(favAuthor).Where("user_id = ?", userID).Where("author_id = ?", authorID).Order("id").SelectOrInsert()
 	if err != nil {
 		log.Error("Error:  ", err)
+		return err
+	}
+
+	favCount, err := r.DB.Model(favAuthor).Where("author_id = ?", authorID).Count()
+	if err != nil {
+		return err
+	}
+
+	author.FavCount = int32(favCount)
+	_, err = r.DB.Model(&author).Column("fav_count").Where("id = ?", authorID).Update()
+	if err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (r *Repository) RemoveAuthorFromUsersFavourites(userID, quoteID string) error {
-	var favAuthor model.FavouriteAuthors
+func (r *Repository) RemoveAuthorFromUsersFavourites(userID, authorID string) error {
 
-	_, err := r.DB.Model(&favAuthor).Where("user_id = ?", userID).Where("author_id = ?", quoteID).Delete()
+	var favAuthor model.FavouriteAuthors
+	var author model.Author
+
+	_, err := r.DB.Model(&favAuthor).Where("user_id = ?", userID).Where("author_id = ?", authorID).Delete()
 	if err != nil {
 		log.Error("Error:  ", err)
+		return err
+	}
+
+	favCount, err := r.DB.Model(&favAuthor).Where("author_id = ?", authorID).Count()
+	if err != nil {
+		return err
+	}
+
+	author.FavCount = int32(favCount)
+	_, err = r.DB.Model(&author).Column("fav_count").Where("id = ?", authorID).Update()
+	if err != nil {
 		return err
 	}
 

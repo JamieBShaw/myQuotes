@@ -17,8 +17,8 @@ type Author {
   id: ID!
   name: String!
   subject: String
-  DOB: Time!
-  DOD: Time!
+  DOB: Time
+  DOD: Time
   favCount: Int!
   quotes: [Quote!]!
   user: User!
@@ -56,7 +56,7 @@ input AuthorFilter {
   name: String
   creatorId: ID
   subject: String
-  dob: Time
+  dob: String
   favCount: Int
   CreatedAt: Time
 }
@@ -67,7 +67,7 @@ input QuoteFilter {
   creatorId: ID
   subject: String
   favCount: Int
-  dateOf: Time
+  dateOf: String
   CreatedAt: Time
 }
 
@@ -86,21 +86,21 @@ input LoginInput {
 input QuoteCreateInput {
   body: String!
   authorId: ID!
-  dateOf: Time!
+  dateOf: String
   subject: String!
 }
 
 input AuthorCreateInput {
   name: String!
-  DOD: Time!
-  DOB: Time!
+  DOD: String
+  DOB: String
 }
 
 input EditQuote {
   id: ID!
   body: String
   author: String
-  dateOf: Time
+  dateOf: String
   subject: String
 }
 

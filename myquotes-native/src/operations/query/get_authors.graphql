@@ -3,5 +3,12 @@ query GetAuthors($input: AuthorFilter!) {
     __typename
     id
     name
+    DOB
+    DOD
+    favCount
+    quotes {
+      id
+      body
+    }
   }
 }

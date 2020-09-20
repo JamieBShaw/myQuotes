@@ -7,8 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	createAuthorSQL = `INSERT INTO authors (name, creator_id, dob, dod) VALUES (?, ?, ?, ?);`
+)
+
 func (r *Repository) GetAuthors(filter *model.AuthorFilter, limit *int, offset *int) ([]*model.Author, error) {
-	log.Info(ARepo, " Getting Authors by subject and or name")
+	log.Info(ARepo, " Getting Authors by filter")
 
 	var authors []*model.Author
 
@@ -23,6 +27,10 @@ func (r *Repository) GetAuthors(filter *model.AuthorFilter, limit *int, offset *
 		if filter.Name != nil && *filter.Name != "" {
 			query.Where("name ILIKE ?", fmt.Sprintf("%%%s%%", *filter.Name))
 		}
+
+		if filter.CreatorID != nil && *filter.CreatorID != "" {
+			query.Where("creator_id = ?", filter.CreatorID)
+		}
 	}
 
 	if limit != nil && offset != nil {
@@ -34,8 +42,21 @@ func (r *Repository) GetAuthors(filter *model.AuthorFilter, limit *int, offset *
 		return nil, err
 	}
 
-	//uniqueAuthors := unique(authors)
-	return authors, nil
+	// only return unique authors
+	uniqueAuthors := unique(authors)
+	return uniqueAuthors, nil
+}
+
+func (r *Repository) GetAuthorByName(name string) (*model.Author, error) {
+	log.Info(ARepo, " Getting Author by name")
+	var author model.Author
+
+	err := r.DB.Model(&author).Where("name = ?", name).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	return &author, nil
 }
 
 func (r *Repository) AuthorByID(id string) (*model.Author, error) {
@@ -63,11 +84,12 @@ func (r *Repository) AuthorByQuote(quote *model.Quote) (*model.Author, error) {
 func (r *Repository) CreateAuthor(author *model.Author) (*model.Author, error) {
 	log.Info(ARepo, " Creating Author")
 
-	_, err := r.DB.Model(&author).Returning("*").Insert()
+	_, err := r.DB.Model(&author).ExecOne(createAuthorSQL, author.Name, author.CreatorID, author.Dob, author.Dob)
 	if err != nil {
-		log.Error("Could not insert author", err)
+		log.Error("Error:  ", err)
 		return nil, err
 	}
+
 	return author, nil
 }
 
@@ -105,14 +127,13 @@ func (r *Repository) UpdateByField(field, value, id string) (*model.Author, erro
 	return &author, nil
 }
 
-
 func unique(authors []*model.Author) []*model.Author {
 	keys := make(map[*model.Author]bool)
 	var list []*model.Author
-	for _, entry := range authors {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
+	for _, author := range authors {
+		if _, value := keys[author]; !value {
+			keys[author] = true
+			list = append(list, author)
 		}
 	}
 	return list

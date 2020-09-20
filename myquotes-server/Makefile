@@ -11,7 +11,6 @@ migrate-create-favourite-quotes:
 migrate-create-favourite-authors:
 	migrate create -ext sql -dir database/migrations create_favourite_authors
 
-
 migrate-up:
 	migrate -path "database/migrations" -database "postgres://myquotepostgres:myquotepostgres@localhost:5432/myquotes-db-dev?sslmode=disable" up
 migrate-down:

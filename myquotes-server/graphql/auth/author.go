@@ -9,21 +9,47 @@ import (
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 )
 
+const (
+	layout = "2006-01-02"
+)
+
 func (a *Auth) CreateAuthor(ctx context.Context, input model.AuthorCreateInput) (*model.Author, error) {
 	log.Info("Beginning Author create process.............")
 	user, err := getUserFromCtx(ctx)
 	if err != nil {
 		return nil, AuthErr
 	}
+
+	// check if author with that name already exists:
+	// if no error that means author with that name already exists
+	_, err = a.Repo.GetAuthorByName(input.Name)
+	if err == nil {
+		log.Error("Error:  ", "Author already exists with that name")
+		return nil, err
+	}
+
+	 dob, err := ParseDate(layout, *input.Dob);
+	 if err != nil {
+		log.Error("Error:  ", err.Error(), "   dob:  ", dob)
+		return nil, err
+	 }
+	dod, err := ParseDate(layout, *input.Dod);
+	if err != nil {
+		log.Error("Error:  ", err.Error(), "   dod:  ", dod)
+		return nil, err
+	}
+
 	author := &model.Author{
-		Name:   input.Name,
-		Dob:    input.Dob,
-		Dod:    input.Dod,
+		Name:      input.Name,
+		Dob: dob,
+		Dod: dod,
+
 		CreatorID: user.ID,
 	}
 
 	_, err = a.Repo.CreateAuthor(author)
 	if err != nil {
+		log.Error("Error:  ", err)
 		return nil, GenericErr
 	}
 
@@ -80,8 +106,6 @@ func (a *Auth) EditAuthorName(ctx context.Context, id string, name string) (*mod
 
 	_, err = a.Repo.UpdateAuthor(author)
 
-	// Cant get this to work yet
-	//author, err = a.authorRepo.UpdateByField("name", name, id)
 	log.Info("Author name successfully updated")
 	return author, nil
 }
@@ -134,7 +158,6 @@ func (a *Auth) EditAuthorDod(ctx context.Context, id string, dod time.Time) (*mo
 	return author, nil
 }
 
-
 func (a *Auth) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.Author, error) {
 	log.Info("Beginning adding author to users favourites process.............")
 	user, err := getUserFromCtx(ctx)
@@ -158,8 +181,6 @@ func (a *Auth) AddAuthorToFavourites(ctx context.Context, id string) ([]*model.A
 	return authors, nil
 }
 
-
-
 func (a *Auth) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*model.Author, error) {
 	log.Info("Beginning removing author from users favourites process.............")
 	user, err := getUserFromCtx(ctx)
@@ -177,4 +198,10 @@ func (a *Auth) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*mo
 }
 
 
-
+func ParseDate(layout, date string) (time.Time, error) {
+	parsedDate, err := time.Parse(layout, date)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return parsedDate, nil
+}

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   innerContainer: {
     padding: 10,
-    marginBottom: 30,
+    marginBottom: 100,
   },
   searchContainer: {
     height: 50,

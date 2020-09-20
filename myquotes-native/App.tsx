@@ -2,6 +2,7 @@ import "react-native-gesture-handler";
 import React, { useState } from "react";
 import { Image } from "react-native";
 import { enableScreens } from "react-native-screens";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { ApolloProvider } from "@apollo/client";
 import { AppLoading } from "expo";
@@ -57,9 +58,11 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <AuthContextProvider>
-        <NavigationContainer>
-          <MainStackNavigator />
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <MainStackNavigator />
+          </NavigationContainer>
+        </SafeAreaProvider>
       </AuthContextProvider>
     </ApolloProvider>
   );

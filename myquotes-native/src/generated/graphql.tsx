@@ -12,6 +12,38 @@ export type Scalars = {
   Time: any;
 };
 
+export type UserFilter = {
+  username?: Maybe<Scalars['String']>;
+};
+
+export type AuthorFilter = {
+  name?: Maybe<Scalars['String']>;
+  creatorId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  favCount?: Maybe<Scalars['Int']>;
+  CreatedAt?: Maybe<Scalars['Time']>;
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  authToken: AuthToken;
+  user: User;
+};
+
+export type Author = {
+  __typename?: 'Author';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  subject?: Maybe<Scalars['String']>;
+  DOB?: Maybe<Scalars['Time']>;
+  DOD?: Maybe<Scalars['Time']>;
+  favCount: Scalars['Int'];
+  quotes: Array<Quote>;
+  user: User;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
 
 export type Quote = {
   __typename?: 'Quote';
@@ -26,27 +58,17 @@ export type Quote = {
   updatedAt: Scalars['Time'];
 };
 
-export type AuthToken = {
-  __typename?: 'AuthToken';
-  accessToken: Scalars['String'];
-  expiredAt: Scalars['Time'];
+export type RegisterInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  confirmPassword: Scalars['String'];
 };
 
-export type QuoteFilter = {
-  authorId?: Maybe<Scalars['ID']>;
-  authorIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  creatorId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-  favCount?: Maybe<Scalars['Int']>;
-  dateOf?: Maybe<Scalars['Time']>;
-  CreatedAt?: Maybe<Scalars['Time']>;
-};
-
-export type QuoteCreateInput = {
-  body: Scalars['String'];
-  authorId: Scalars['ID'];
-  dateOf: Scalars['Time'];
-  subject: Scalars['String'];
+export type AuthorCreateInput = {
+  name: Scalars['String'];
+  DOD?: Maybe<Scalars['String']>;
+  DOB?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -93,38 +115,60 @@ export type QueryAuthorsArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
-export type AuthorCreateInput = {
-  name: Scalars['String'];
-  DOD: Scalars['Time'];
-  DOB: Scalars['Time'];
+export type AuthToken = {
+  __typename?: 'AuthToken';
+  accessToken: Scalars['String'];
+  expiredAt: Scalars['Time'];
 };
 
-export type Author = {
-  __typename?: 'Author';
+export type LoginInput = {
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
   id: Scalars['ID'];
-  name: Scalars['String'];
-  subject?: Maybe<Scalars['String']>;
-  DOB: Scalars['Time'];
-  DOD: Scalars['Time'];
-  favCount: Scalars['Int'];
-  quotes: Array<Quote>;
-  user: User;
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  isLoggedIn: Scalars['Boolean'];
+  favouriteQuotes?: Maybe<Array<Maybe<Quote>>>;
+  favouriteAuthors?: Maybe<Array<Maybe<Author>>>;
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
 };
 
-export type EditQuote = {
-  id: Scalars['ID'];
-  body?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
-  dateOf?: Maybe<Scalars['Time']>;
-  subject?: Maybe<Scalars['String']>;
+export type QuoteCreateInput = {
+  body: Scalars['String'];
+  authorId: Scalars['ID'];
+  dateOf?: Maybe<Scalars['String']>;
+  subject: Scalars['String'];
 };
 
 export type EditAuthor = {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   subject?: Maybe<Scalars['String']>;
+};
+
+
+export type EditQuote = {
+  id: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['String']>;
+  dateOf?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+export type QuoteFilter = {
+  authorId?: Maybe<Scalars['ID']>;
+  authorIds?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  creatorId?: Maybe<Scalars['ID']>;
+  subject?: Maybe<Scalars['String']>;
+  favCount?: Maybe<Scalars['Int']>;
+  dateOf?: Maybe<Scalars['String']>;
+  CreatedAt?: Maybe<Scalars['Time']>;
 };
 
 export type Mutation = {
@@ -241,49 +285,22 @@ export type MutationRemoveAuthorFromFavouritesArgs = {
   id: Scalars['ID'];
 };
 
-export type AuthPayload = {
-  __typename?: 'AuthPayload';
-  authToken: AuthToken;
-  user: User;
-};
-
-export type UserFilter = {
-  username?: Maybe<Scalars['String']>;
-};
-
-export type AuthorFilter = {
-  name?: Maybe<Scalars['String']>;
-  creatorId?: Maybe<Scalars['ID']>;
-  subject?: Maybe<Scalars['String']>;
-  dob?: Maybe<Scalars['Time']>;
-  favCount?: Maybe<Scalars['Int']>;
-  CreatedAt?: Maybe<Scalars['Time']>;
-};
-
-export type RegisterInput = {
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-};
-
-export type User = {
-  __typename?: 'User';
+export type AddAuthorToUsersFavMutationVariables = Exact<{
   id: Scalars['ID'];
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  isLoggedIn: Scalars['Boolean'];
-  favouriteQuotes?: Maybe<Array<Maybe<Quote>>>;
-  favouriteAuthors?: Maybe<Array<Maybe<Author>>>;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
-};
+}>;
 
-export type LoginInput = {
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
-};
+
+export type AddAuthorToUsersFavMutation = (
+  { __typename?: 'Mutation' }
+  & { addAuthorToFavourites: Array<Maybe<(
+    { __typename: 'Author' }
+    & Pick<Author, 'id' | 'name' | 'DOB' | 'DOD' | 'favCount'>
+    & { quotes: Array<(
+      { __typename?: 'Quote' }
+      & Pick<Quote, 'id' | 'body'>
+    )> }
+  )>> }
+);
 
 export type AddQuoteToUsersFavMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -294,12 +311,42 @@ export type AddQuoteToUsersFavMutation = (
   { __typename?: 'Mutation' }
   & { addQuoteToFavourites: Array<Maybe<(
     { __typename?: 'Quote' }
-    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject'>
+    & Pick<Quote, 'id' | 'body' | 'subject' | 'favCount'>
     & { author: (
       { __typename?: 'Author' }
       & Pick<Author, 'id' | 'name'>
     ) }
   )>> }
+);
+
+export type CreateAuthorMutationVariables = Exact<{
+  input: AuthorCreateInput;
+}>;
+
+
+export type CreateAuthorMutation = (
+  { __typename?: 'Mutation' }
+  & { createAuthor: (
+    { __typename?: 'Author' }
+    & Pick<Author, 'id' | 'name' | 'favCount' | 'DOB' | 'DOD'>
+  ) }
+);
+
+export type CreateQuoteMutationVariables = Exact<{
+  input: QuoteCreateInput;
+}>;
+
+
+export type CreateQuoteMutation = (
+  { __typename?: 'Mutation' }
+  & { createQuote: (
+    { __typename?: 'Quote' }
+    & Pick<Quote, 'id' | 'favCount' | 'subject' | 'dateOf'>
+    & { author: (
+      { __typename?: 'Author' }
+      & Pick<Author, 'id' | 'name'>
+    ) }
+  ) }
 );
 
 export type LoginUserMutationVariables = Exact<{
@@ -326,14 +373,11 @@ export type LoginUserMutation = (
         ) }
       )>>>, favouriteAuthors?: Maybe<Array<Maybe<(
         { __typename?: 'Author' }
-        & Pick<Author, 'id' | 'name' | 'subject' | 'createdAt' | 'updatedAt'>
+        & Pick<Author, 'id' | 'name' | 'DOB' | 'DOD' | 'favCount'>
         & { quotes: Array<(
           { __typename?: 'Quote' }
-          & Pick<Quote, 'id'>
-        )>, user: (
-          { __typename?: 'User' }
-          & Pick<User, 'id'>
-        ) }
+          & Pick<Quote, 'id' | 'body'>
+        )> }
       )>>> }
     ) }
   ) }
@@ -363,17 +407,31 @@ export type RegisterUserMutation = (
         ) }
       )>>>, favouriteAuthors?: Maybe<Array<Maybe<(
         { __typename?: 'Author' }
-        & Pick<Author, 'id' | 'name' | 'subject' | 'createdAt' | 'updatedAt'>
+        & Pick<Author, 'id' | 'name' | 'DOB' | 'DOD' | 'favCount'>
         & { quotes: Array<(
           { __typename?: 'Quote' }
-          & Pick<Quote, 'id'>
-        )>, user: (
-          { __typename?: 'User' }
-          & Pick<User, 'id'>
-        ) }
+          & Pick<Quote, 'id' | 'body'>
+        )> }
       )>>> }
     ) }
   ) }
+);
+
+export type RemoveAuthorFromUsersFavMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveAuthorFromUsersFavMutation = (
+  { __typename?: 'Mutation' }
+  & { removeAuthorFromFavourites: Array<Maybe<(
+    { __typename: 'Author' }
+    & Pick<Author, 'id' | 'name' | 'DOB' | 'DOD' | 'favCount'>
+    & { quotes: Array<(
+      { __typename?: 'Quote' }
+      & Pick<Quote, 'id' | 'body'>
+    )> }
+  )>> }
 );
 
 export type RemoveQuoteFromUsersFavMutationVariables = Exact<{
@@ -384,8 +442,8 @@ export type RemoveQuoteFromUsersFavMutationVariables = Exact<{
 export type RemoveQuoteFromUsersFavMutation = (
   { __typename?: 'Mutation' }
   & { removeQuoteFromFavourites: Array<Maybe<(
-    { __typename?: 'Quote' }
-    & Pick<Quote, 'id' | 'body' | 'favCount' | 'subject'>
+    { __typename: 'Quote' }
+    & Pick<Quote, 'id' | 'body' | 'subject' | 'favCount'>
     & { author: (
       { __typename?: 'Author' }
       & Pick<Author, 'id' | 'name'>
@@ -402,7 +460,11 @@ export type GetAuthorsQuery = (
   { __typename?: 'Query' }
   & { authors: Array<(
     { __typename: 'Author' }
-    & Pick<Author, 'id' | 'name'>
+    & Pick<Author, 'id' | 'name' | 'DOB' | 'DOD' | 'favCount'>
+    & { quotes: Array<(
+      { __typename?: 'Quote' }
+      & Pick<Quote, 'id' | 'body'>
+    )> }
   )> }
 );
 
@@ -448,23 +510,64 @@ export type GetUserQueryVariables = Exact<{
 export type GetUserQuery = (
   { __typename?: 'Query' }
   & { user: (
-    { __typename?: 'User' }
+    { __typename: 'User' }
     & Pick<User, 'id' | 'username' | 'email' | 'createdAt' | 'updatedAt' | 'isLoggedIn'>
   ) }
 );
 
 
+export const AddAuthorToUsersFavDocument = gql`
+    mutation AddAuthorToUsersFav($id: ID!) {
+  addAuthorToFavourites(id: $id) {
+    __typename
+    id
+    name
+    DOB
+    DOD
+    quotes {
+      id
+      body
+    }
+    favCount
+  }
+}
+    `;
+export type AddAuthorToUsersFavMutationFn = Apollo.MutationFunction<AddAuthorToUsersFavMutation, AddAuthorToUsersFavMutationVariables>;
+
+/**
+ * __useAddAuthorToUsersFavMutation__
+ *
+ * To run a mutation, you first call `useAddAuthorToUsersFavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAuthorToUsersFavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAuthorToUsersFavMutation, { data, loading, error }] = useAddAuthorToUsersFavMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAddAuthorToUsersFavMutation(baseOptions?: Apollo.MutationHookOptions<AddAuthorToUsersFavMutation, AddAuthorToUsersFavMutationVariables>) {
+        return Apollo.useMutation<AddAuthorToUsersFavMutation, AddAuthorToUsersFavMutationVariables>(AddAuthorToUsersFavDocument, baseOptions);
+      }
+export type AddAuthorToUsersFavMutationHookResult = ReturnType<typeof useAddAuthorToUsersFavMutation>;
+export type AddAuthorToUsersFavMutationResult = Apollo.MutationResult<AddAuthorToUsersFavMutation>;
+export type AddAuthorToUsersFavMutationOptions = Apollo.BaseMutationOptions<AddAuthorToUsersFavMutation, AddAuthorToUsersFavMutationVariables>;
 export const AddQuoteToUsersFavDocument = gql`
     mutation AddQuoteToUsersFav($id: ID!) {
   addQuoteToFavourites(id: $id) {
     id
     body
-    favCount
+    subject
     author {
       id
       name
     }
-    subject
+    favCount
   }
 }
     `;
@@ -493,6 +596,81 @@ export function useAddQuoteToUsersFavMutation(baseOptions?: Apollo.MutationHookO
 export type AddQuoteToUsersFavMutationHookResult = ReturnType<typeof useAddQuoteToUsersFavMutation>;
 export type AddQuoteToUsersFavMutationResult = Apollo.MutationResult<AddQuoteToUsersFavMutation>;
 export type AddQuoteToUsersFavMutationOptions = Apollo.BaseMutationOptions<AddQuoteToUsersFavMutation, AddQuoteToUsersFavMutationVariables>;
+export const CreateAuthorDocument = gql`
+    mutation CreateAuthor($input: AuthorCreateInput!) {
+  createAuthor(input: $input) {
+    id
+    name
+    favCount
+    DOB
+    DOD
+  }
+}
+    `;
+export type CreateAuthorMutationFn = Apollo.MutationFunction<CreateAuthorMutation, CreateAuthorMutationVariables>;
+
+/**
+ * __useCreateAuthorMutation__
+ *
+ * To run a mutation, you first call `useCreateAuthorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAuthorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAuthorMutation, { data, loading, error }] = useCreateAuthorMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAuthorMutation(baseOptions?: Apollo.MutationHookOptions<CreateAuthorMutation, CreateAuthorMutationVariables>) {
+        return Apollo.useMutation<CreateAuthorMutation, CreateAuthorMutationVariables>(CreateAuthorDocument, baseOptions);
+      }
+export type CreateAuthorMutationHookResult = ReturnType<typeof useCreateAuthorMutation>;
+export type CreateAuthorMutationResult = Apollo.MutationResult<CreateAuthorMutation>;
+export type CreateAuthorMutationOptions = Apollo.BaseMutationOptions<CreateAuthorMutation, CreateAuthorMutationVariables>;
+export const CreateQuoteDocument = gql`
+    mutation CreateQuote($input: QuoteCreateInput!) {
+  createQuote(input: $input) {
+    id
+    favCount
+    subject
+    dateOf
+    author {
+      id
+      name
+    }
+  }
+}
+    `;
+export type CreateQuoteMutationFn = Apollo.MutationFunction<CreateQuoteMutation, CreateQuoteMutationVariables>;
+
+/**
+ * __useCreateQuoteMutation__
+ *
+ * To run a mutation, you first call `useCreateQuoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateQuoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createQuoteMutation, { data, loading, error }] = useCreateQuoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateQuoteMutation(baseOptions?: Apollo.MutationHookOptions<CreateQuoteMutation, CreateQuoteMutationVariables>) {
+        return Apollo.useMutation<CreateQuoteMutation, CreateQuoteMutationVariables>(CreateQuoteDocument, baseOptions);
+      }
+export type CreateQuoteMutationHookResult = ReturnType<typeof useCreateQuoteMutation>;
+export type CreateQuoteMutationResult = Apollo.MutationResult<CreateQuoteMutation>;
+export type CreateQuoteMutationOptions = Apollo.BaseMutationOptions<CreateQuoteMutation, CreateQuoteMutationVariables>;
 export const LoginUserDocument = gql`
     mutation LoginUser($input: LoginInput!) {
   loginUser(input: $input) {
@@ -520,15 +698,13 @@ export const LoginUserDocument = gql`
       favouriteAuthors {
         id
         name
-        subject
+        DOB
+        DOD
+        favCount
         quotes {
           id
+          body
         }
-        user {
-          id
-        }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -586,15 +762,13 @@ export const RegisterUserDocument = gql`
       favouriteAuthors {
         id
         name
-        subject
+        DOB
+        DOD
+        favCount
         quotes {
           id
+          body
         }
-        user {
-          id
-        }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -625,17 +799,59 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const RemoveAuthorFromUsersFavDocument = gql`
+    mutation RemoveAuthorFromUsersFav($id: ID!) {
+  removeAuthorFromFavourites(id: $id) {
+    __typename
+    id
+    name
+    DOB
+    DOD
+    quotes {
+      id
+      body
+    }
+    favCount
+  }
+}
+    `;
+export type RemoveAuthorFromUsersFavMutationFn = Apollo.MutationFunction<RemoveAuthorFromUsersFavMutation, RemoveAuthorFromUsersFavMutationVariables>;
+
+/**
+ * __useRemoveAuthorFromUsersFavMutation__
+ *
+ * To run a mutation, you first call `useRemoveAuthorFromUsersFavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAuthorFromUsersFavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAuthorFromUsersFavMutation, { data, loading, error }] = useRemoveAuthorFromUsersFavMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveAuthorFromUsersFavMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAuthorFromUsersFavMutation, RemoveAuthorFromUsersFavMutationVariables>) {
+        return Apollo.useMutation<RemoveAuthorFromUsersFavMutation, RemoveAuthorFromUsersFavMutationVariables>(RemoveAuthorFromUsersFavDocument, baseOptions);
+      }
+export type RemoveAuthorFromUsersFavMutationHookResult = ReturnType<typeof useRemoveAuthorFromUsersFavMutation>;
+export type RemoveAuthorFromUsersFavMutationResult = Apollo.MutationResult<RemoveAuthorFromUsersFavMutation>;
+export type RemoveAuthorFromUsersFavMutationOptions = Apollo.BaseMutationOptions<RemoveAuthorFromUsersFavMutation, RemoveAuthorFromUsersFavMutationVariables>;
 export const RemoveQuoteFromUsersFavDocument = gql`
     mutation RemoveQuoteFromUsersFav($id: ID!) {
   removeQuoteFromFavourites(id: $id) {
+    __typename
     id
     body
-    favCount
+    subject
     author {
       id
       name
     }
-    subject
+    favCount
   }
 }
     `;
@@ -670,6 +886,13 @@ export const GetAuthorsDocument = gql`
     __typename
     id
     name
+    DOB
+    DOD
+    favCount
+    quotes {
+      id
+      body
+    }
   }
 }
     `;
@@ -783,6 +1006,7 @@ export type GetQuotesQueryResult = Apollo.QueryResult<GetQuotesQuery, GetQuotesQ
 export const GetUserDocument = gql`
     query GetUser($id: ID!) {
   user(id: $id) {
+    __typename
     id
     username
     email

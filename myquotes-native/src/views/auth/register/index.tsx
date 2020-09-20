@@ -12,7 +12,7 @@ import { AppButton } from "../../../components/AppButton";
 import { AppTextInput } from "../../../components/AppTextInput";
 import { styles } from "../login/styles";
 import { AuthContext } from "../../../state/context/auth";
-import { ActionTypes } from "../../../state/actions/actions";
+import { ActionTypes } from "../../../state/actions/authActions";
 import { setUserToken } from "../../../utils/token";
 
 const initialState: RegisterInput = {

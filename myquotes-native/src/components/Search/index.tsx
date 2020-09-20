@@ -47,7 +47,7 @@ export const SearchInput: React.FC<Props> = (
       <View style={styles.button}>
         <AppButton
           onPress={onPress}
-          text={<MaterialIcons name="search" size={30} color="white" />}
+          text={<MaterialIcons name="search" size={31} color="white" />}
         />
       </View>
     </View>
@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
+    // borderTopRightRadius: 10,
+    // borderBottomRightRadius: 10,
     fontSize: Theme.font.size,
     fontFamily: Theme.font.primary,
     color: Theme.colors.textPrimary,

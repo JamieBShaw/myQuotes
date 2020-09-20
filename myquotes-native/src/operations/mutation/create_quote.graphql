@@ -1,0 +1,12 @@
+mutation CreateQuote($input: QuoteCreateInput!) {
+  createQuote(input: $input) {
+    id
+    favCount
+    subject
+    dateOf
+    author {
+      id
+      name
+    }
+  }
+}

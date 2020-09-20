@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { AppButton } from "../AppButton";
 import { Theme } from "../../../theme";
 import { QuoteData } from "../../utils/interfaces";
+import { likedByUser } from "../../utils/helpers/likedByUser";
+import { AuthContext } from "../../state/context/auth";
 
 interface Props {
   item: QuoteData;
-  likedByUser: (quote: QuoteData) => boolean;
   addQuoteToFav: (id: string) => void;
   removeQuoteFromFav: (id: string) => void;
 }
@@ -17,12 +18,12 @@ interface Props {
 //   return true;
 // };
 
-export const Index: React.FC<Props> = ({
+export const QuoteItem: React.FC<Props> = ({
   item,
   addQuoteToFav,
-  likedByUser,
   removeQuoteFromFav,
 }) => {
+  const { user } = useContext(AuthContext);
   if (!item) {
     return null;
   }
@@ -34,18 +35,21 @@ export const Index: React.FC<Props> = ({
 
       <View style={styles.secondaryContainer}>
         <Text style={styles.author}>
-          <Text style={{ fontWeight: "bold" }}> {item.author.name}</Text> |{" "}
+          <Text style={{ fontWeight: "bold" }}>
+            {item.id} | {item.author.name} | {item.subject ? item.subject : ""}
+          </Text>{" "}
+          |{" "}
           <MaterialIcons
             name="favorite"
             size={14}
-            color={likedByUser(item) ? "red" : "black"}
+            color={likedByUser(item, user) ? "red" : "black"}
           />{" "}
           {item.favCount}
         </Text>
         <View>
           <AppButton
             text={
-              likedByUser(item) ? (
+              likedByUser(item, user) ? (
                 <MaterialIcons
                   name="remove-circle-outline"
                   size={28}
@@ -60,10 +64,12 @@ export const Index: React.FC<Props> = ({
               )
             }
             style={
-              likedByUser(item) ? styles.secondaryButton : styles.primaryButton
+              likedByUser(item, user)
+                ? styles.secondaryButton
+                : styles.primaryButton
             }
             onPress={
-              likedByUser(item)
+              likedByUser(item, user)
                 ? () => removeQuoteFromFav(item.id)
                 : () => addQuoteToFav(item.id)
             }
@@ -87,8 +93,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
-  buttonContainer: {},
-
   primaryButton: {
     marginTop: 10,
     backgroundColor: Theme.colors.background,
@@ -109,7 +113,6 @@ const styles = StyleSheet.create({
     fontSize: Theme.font.size - 2,
     fontStyle: "italic",
   },
-
   author: {
     paddingTop: 12,
     fontFamily: Theme.font.primary,

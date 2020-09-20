@@ -19,6 +19,7 @@ type Author struct {
 
 type AuthorRepository interface {
 	GetAuthors(filter *AuthorFilter, limit *int, offset *int) ([]*Author, error)
+	GetAuthorByName(name string) (*Author, error)
 
 	AuthorByID(id string) (*Author, error)
 	AuthorByQuote(quote *Quote) (*Author, error)
@@ -33,12 +34,12 @@ type AuthorFilter struct {
 	Subject *string `json:"subject"`
 	CreatorID *string `json:"creatorID"`
 	FavCount *int32 `json:"favCount"`
-	Dob time.Time `json:"dob"`
+	Dob *string `json:"dob"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
 type AuthorCreateInput struct {
 	Name string    `json:"name" validate:"required,max=42,min=2"`
-	Dob  time.Time `json:"dob"`
-	Dod  time.Time `json:"dod"`
+	Dob  *string `json:"dob"`
+	Dod  *string `json:"dod"`
 }

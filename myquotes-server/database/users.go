@@ -26,7 +26,7 @@ func (r *Repository) GetUsers(filter *model.UserFilter) ([]*model.User, error) {
 }
 
 func (r *Repository) ByField(field, value string) (*model.User, error) {
-	log.Info(URepo, " Getting user by field: ", field, " value: ", value)
+	//log.Info(URepo, " Getting user by field: ", field, " value: ", value)
 
 	var user model.User
 	if err := r.DB.Model(&user).Where(fmt.Sprintf("%v = ?", field), value).First(); err != nil {
@@ -36,7 +36,7 @@ func (r *Repository) ByField(field, value string) (*model.User, error) {
 }
 
 func (r *Repository) ByFieldOrField(fieldA, valueA, fieldB, valueB string) (*model.User, error) {
-	log.Info("[UsersRepo] Getting user by field A:  ", fieldA, "  valueA:  ", valueA, "  OR  fieldB:  ", fieldB, "  valueB:  ", valueB)
+	//log.Info("[UsersRepo] Getting user by field A:  ", fieldA, "  valueA:  ", valueA, "  OR  fieldB:  ", fieldB, "  valueB:  ", valueB)
 
 	user, err := r.ByField(fieldA, valueA)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r *Repository) ByFieldOrField(fieldA, valueA, fieldB, valueB string) (*mod
 }
 
 func (r *Repository) UserByID(id string) (*model.User, error) {
-	log.Info(URepo, " Getting user by id")
+	//log.Info(URepo, " Getting user by id")
 	return r.ByField("id", id)
 }
 

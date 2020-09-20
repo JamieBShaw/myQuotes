@@ -3,12 +3,12 @@ package database
 import (
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 	"github.com/go-pg/pg/v10"
-
 	log "github.com/sirupsen/logrus"
 )
 
-
-
+const (
+	createQuoteSQL = `INSERT INTO quotes ;`
+)
 
 func (r *Repository) GetQuotes(filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
 	log.Info(QRepo, " Getting quote(s) by author_id and or subject")
@@ -25,13 +25,15 @@ func (r *Repository) GetQuotes(filter *model.QuoteFilter, limit *int, offset *in
 			query.Where("subject = ?", filter.Subject)
 		}
 
+		if filter.CreatorID != nil && *filter.CreatorID != "" {
+			query.Where("creator_id = ?", filter.CreatorID)
+		}
+
 		if filter.AuthorIds != nil {
-			log.Info("Author IDs is not null........................")
 			var ids []string
 			for _, authorID := range filter.AuthorIds {
 				ids = append(ids, *authorID)
 			}
-			log.Info("AUTHOR IDS ARRAY:  ", &ids)
 			if len(ids) == 0 {
 				log.Warn("User currently has no favourites")
 				return nil, nil
@@ -95,11 +97,10 @@ func (r *Repository) CreateQuote(quote *model.Quote) (*model.Quote, error) {
 	return quote, nil
 }
 
-
 func (r *Repository) UpdateQuote(quote *model.Quote) (*model.Quote, error) {
 	log.Info(QRepo, " Updating quote, quote.ID:  ", quote.ID)
 
-	_ , err := r.DB.Model(quote).Update()
+	_, err := r.DB.Model(quote).Update()
 	if err != nil {
 		return nil, err
 	}

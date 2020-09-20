@@ -1,10 +1,10 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import MyQuotes from "../views/myquotes";
 import Home from "../views/home";
+import CreateTopTabNav from "./MainTopTabNavigation";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -13,7 +13,7 @@ export const MainTabNavigation = () => {
     <Tab.Navigator
       activeColor="green"
       inactiveColor="black"
-      barStyle={{ backgroundColor: "white", height: 50 }}
+      barStyle={{ backgroundColor: "white" }}
       initialRouteName="Home"
       shifting
     >
@@ -34,6 +34,16 @@ export const MainTabNavigation = () => {
           title: "My Quotes",
           tabBarIcon: () => (
             <MaterialIcons name="format-quote" size={28} color="black" />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Create"
+        component={CreateTopTabNav}
+        options={{
+          title: "Create",
+          tabBarIcon: () => (
+            <MaterialIcons name="create" size={28} color="black" />
           ),
         }}
       />

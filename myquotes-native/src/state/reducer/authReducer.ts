@@ -1,5 +1,5 @@
 import { removeUserToken } from "../../utils/token";
-import { IUserActions, ActionTypes } from "../actions/actions";
+import { IUserActions, ActionTypes } from "../actions/authActions";
 import { IUser } from "../context/auth";
 
 export const authReducer = (state: IUser, action: IUserActions): IUser => {
@@ -24,6 +24,30 @@ export const authReducer = (state: IUser, action: IUserActions): IUser => {
         ...state,
         favouriteQuotes: state.favouriteQuotes?.filter(
           (quote) => quote?.id !== action.payload
+        ),
+      };
+
+    case ActionTypes.addAuthorToUsersFavourites:
+      if (
+        state.favouriteAuthors?.length === 0 ||
+        state.favouriteAuthors === undefined ||
+        state.favouriteAuthors === null
+      ) {
+        return {
+          ...state,
+          favouriteAuthors: [action.payload],
+        };
+      }
+      return {
+        ...state,
+        favouriteAuthors: [...state.favouriteAuthors, action.payload],
+      };
+
+    case ActionTypes.removeAuthorFromUsersFavourites:
+      return {
+        ...state,
+        favouriteAuthors: state.favouriteAuthors?.filter(
+          (author) => author?.id !== action.payload
         ),
       };
     case ActionTypes.loginUser:

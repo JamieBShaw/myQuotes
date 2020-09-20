@@ -24,15 +24,13 @@ mutation LoginUser($input: LoginInput!) {
       favouriteAuthors {
         id
         name
-        subject
+        DOB
+        DOD
+        favCount
         quotes {
           id
+          body
         }
-        user {
-          id
-        }
-        createdAt
-        updatedAt
       }
     }
   }

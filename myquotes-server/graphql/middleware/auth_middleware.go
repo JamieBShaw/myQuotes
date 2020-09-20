@@ -26,7 +26,7 @@ func AuthMiddleware(db *database.Repository) func(http.Handler) http.Handler {
 				return
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				l.Info("Claims jit:  ", claims["jti"].(string))
+				//l.Info("Claims jit:  ", claims["jti"].(string))
 
 				user, err := db.UserByID(claims["jti"].(string))
 				if err != nil {

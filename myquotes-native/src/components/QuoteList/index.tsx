@@ -1,10 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
   useAddQuoteToUsersFavMutation,
   useRemoveQuoteFromUsersFavMutation,
-  GetQuotesQuery,
-  useGetQuotesQuery,
-  GetQuotesDocument,
 } from "../../generated/graphql";
 import {
   FlatList,
@@ -13,12 +10,12 @@ import {
   StyleSheet,
   Text,
 } from "react-native";
-import { AuthContext } from "../../state/context/auth";
-import { Index } from "../QuoteListItem";
-import { QuoteData, RefetchQuote } from "../../utils/interfaces";
-import { ActionTypes } from "../../state/actions/actions";
 import { ActivityIndicator } from "react-native-paper";
-import { getQueryDefinition } from "@apollo/client/utilities";
+
+import { AuthContext } from "../../state/context/auth";
+import { QuoteItem } from "../QuoteListItem";
+import { QuoteData, RefetchQuote } from "../../utils/interfaces";
+import { ActionTypes } from "../../state/actions/authActions";
 
 interface Props {
   quotesData: QuoteData[] | undefined;
@@ -34,15 +31,13 @@ export const QuoteList: React.FC<Props> = ({
   if (!handleRefetch) {
     handleRefetch = undefined;
   }
-  const { user, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
   const [addQuoteToUsersFavMutation] = useAddQuoteToUsersFavMutation({
-    fetchPolicy: "no-cache",
     onCompleted: () => {
       handleRefetch ? handleRefetch!() : undefined;
     },
   });
   const [removeQuoteFromUsersFavMutation] = useRemoveQuoteFromUsersFavMutation({
-    fetchPolicy: "no-cache",
     onCompleted: () => {
       handleRefetch ? handleRefetch!() : undefined;
     },
@@ -79,23 +74,14 @@ export const QuoteList: React.FC<Props> = ({
       .catch((err) => console.log("Error:  ", err));
   };
 
-  const likedByUser = (quote: QuoteData): boolean => {
-    if (user && user.favouriteQuotes?.find((q) => quote!.id === q?.id)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   const renderItem = (quote: ListRenderItemInfo<QuoteData>) => {
     const { item } = quote;
 
     return (
-      <Index
+      <QuoteItem
         item={item}
         addQuoteToFav={addQuoteToFav}
         removeQuoteFromFav={removeQuoteFromFav}
-        likedByUser={likedByUser}
       />
     );
   };
@@ -122,6 +108,7 @@ export const QuoteList: React.FC<Props> = ({
       data={quotesData}
       renderItem={renderItem}
       keyExtractor={(item) => item!.id}
+      ListFooterComponent={() => <View style={{ paddingBottom: 20 }} />}
       ListEmptyComponent={() => (
         <View
           style={{

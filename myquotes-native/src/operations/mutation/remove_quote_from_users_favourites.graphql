@@ -1,5 +1,6 @@
 mutation RemoveQuoteFromUsersFav($id: ID!) {
   removeQuoteFromFavourites(id: $id) {
+    __typename
     id
     body
     subject

@@ -5,7 +5,9 @@ INSERT INTO authors (name, dob, creator_id) VALUES ('Thomas Sowell', '1946-07-01
 INSERT INTO authors (name, dob, creator_id) VALUES ('Thomas Jefferson', '1731-08-19', 1);
 INSERT INTO authors (name, dob, creator_id) VALUES ('Ludwig Von Mises', '1903-08-19', 1);
 INSERT INTO authors (name, dob, creator_id) VALUES ('Yoda', '1973-03-16', 1);
-
+INSERT INTO authors (name, creator_id, dob, dod) VALUES ('Murray N. Rothbard', 1, '1945-10-11', '1995-08-01');
+INSERT INTO authors (name, creator_id, dob, dod) VALUES ('Albert Camus', 1, '1913-11-07', '1960-01-04');
+INSERT INTO authors (name, creator_id, dob, dod) VALUES ('Aldous Huxley', 1, '1894-07-26', '1963-11-22');
 
 
 INSERT INTO quotes (body, date_of, subject, author_id, creator_id)

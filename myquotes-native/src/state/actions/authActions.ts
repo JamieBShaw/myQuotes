@@ -1,9 +1,11 @@
-import { QuoteData } from "../../utils/interfaces";
+import { QuoteData, AuthorData } from "../../utils/interfaces";
 import { IUser } from "../context/auth";
 
 export enum ActionTypes {
   addQuoteToUsersFavourites,
   removeQuoteFromUsersFavourites,
+  addAuthorToUsersFavourites,
+  removeAuthorFromUsersFavourites,
   loginUser,
   registerUser,
   signOutUser,
@@ -16,6 +18,16 @@ export interface AddQuoteToUserFav {
 
 export interface RemoveQuoteFromUsersFav {
   type: ActionTypes.removeQuoteFromUsersFavourites;
+  payload: string;
+}
+
+export interface AddAuthorToUserFav {
+  type: ActionTypes.addAuthorToUsersFavourites;
+  payload: AuthorData;
+}
+
+export interface RemoveAuthorFromUsersFav {
+  type: ActionTypes.removeAuthorFromUsersFavourites;
   payload: string;
 }
 
@@ -37,6 +49,8 @@ export interface SignOutUser {
 export type IUserActions =
   | AddQuoteToUserFav
   | RemoveQuoteFromUsersFav
+  | AddAuthorToUserFav
+  | RemoveAuthorFromUsersFav
   | LoginUser
   | SignOutUser
   | RegisterUser;

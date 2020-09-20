@@ -4,6 +4,8 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 // import * as Notifications from "expo-notifications";
 // import * as Permissions from "expo-permissions";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import {
   useGetQuotesQuery,
   useGetAuthorsLazyQuery,
@@ -16,13 +18,10 @@ import { styles } from "./styles";
 
 const Home: React.FC = () => {
   const [authorName, setAuthorName] = useState<string | undefined>(undefined);
-  const [authorIds, setAuthorIds] = useState<string[] | null | undefined>(
-    undefined
-  );
+  const [authorIds, setAuthorIds] = useState<string[] | undefined>(undefined);
 
   const { data, loading, refetch } = useGetQuotesQuery({
     fetchPolicy: "no-cache",
-    // notifyOnNetworkStatusChange: true,
     variables: {
       input: {
         authorIds: authorIds,
@@ -70,22 +69,21 @@ const Home: React.FC = () => {
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={{ ...styles.screen, paddingBottom: 0 }}>
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}
       >
         <View style={styles.outerContainer}>
+          <Header signOut />
           <View style={styles.innerContainer}>
-            <Header signOut />
             <View style={styles.searchContainer}>
               <SearchInput
                 searchBy={"Author"}
                 onCustomChange={handleSearchInput}
                 name="search"
                 values={authorName}
-                // onPress={() => refetch()}
               />
             </View>
             <QuoteList
@@ -96,7 +94,7 @@ const Home: React.FC = () => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </View>
+    </SafeAreaView>
   );
 };
 

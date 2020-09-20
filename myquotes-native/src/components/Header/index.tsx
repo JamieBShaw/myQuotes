@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: Dimensions.get("window").width / 3,
+    marginHorizontal: Dimensions.get("window").width / 2.825,
     width: 50,
     height: 50,
     borderRadius: 50,

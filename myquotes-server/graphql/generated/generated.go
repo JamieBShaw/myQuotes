@@ -765,8 +765,8 @@ type Author {
   id: ID!
   name: String!
   subject: String
-  DOB: Time!
-  DOD: Time!
+  DOB: Time
+  DOD: Time
   favCount: Int!
   quotes: [Quote!]!
   user: User!
@@ -804,7 +804,7 @@ input AuthorFilter {
   name: String
   creatorId: ID
   subject: String
-  dob: Time
+  dob: String
   favCount: Int
   CreatedAt: Time
 }
@@ -815,7 +815,7 @@ input QuoteFilter {
   creatorId: ID
   subject: String
   favCount: Int
-  dateOf: Time
+  dateOf: String
   CreatedAt: Time
 }
 
@@ -834,21 +834,21 @@ input LoginInput {
 input QuoteCreateInput {
   body: String!
   authorId: ID!
-  dateOf: Time!
+  dateOf: String
   subject: String!
 }
 
 input AuthorCreateInput {
   name: String!
-  DOD: Time!
-  DOB: Time!
+  DOD: String
+  DOB: String
 }
 
 input EditQuote {
   id: ID!
   body: String
   author: String
-  dateOf: Time
+  dateOf: String
   subject: String
 }
 
@@ -1630,14 +1630,11 @@ func (ec *executionContext) _Author_DOB(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Author_DOD(ctx context.Context, field graphql.CollectedField, obj *model.Author) (ret graphql.Marshaler) {
@@ -1664,14 +1661,11 @@ func (ec *executionContext) _Author_DOD(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Author_favCount(ctx context.Context, field graphql.CollectedField, obj *model.Author) (ret graphql.Marshaler) {
@@ -4525,13 +4519,13 @@ func (ec *executionContext) unmarshalInputAuthorCreateInput(ctx context.Context,
 			}
 		case "DOD":
 			var err error
-			it.Dod, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.Dod, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "DOB":
 			var err error
-			it.Dob, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.Dob, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4567,7 +4561,7 @@ func (ec *executionContext) unmarshalInputAuthorFilter(ctx context.Context, obj 
 			}
 		case "dob":
 			var err error
-			it.Dob, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
+			it.Dob, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4645,7 +4639,7 @@ func (ec *executionContext) unmarshalInputEditQuote(ctx context.Context, obj int
 			}
 		case "dateOf":
 			var err error
-			it.DateOf, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.DateOf, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4705,7 +4699,7 @@ func (ec *executionContext) unmarshalInputQuoteCreateInput(ctx context.Context, 
 			}
 		case "dateOf":
 			var err error
-			it.DateOf, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.DateOf, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4759,7 +4753,7 @@ func (ec *executionContext) unmarshalInputQuoteFilter(ctx context.Context, obj i
 			}
 		case "dateOf":
 			var err error
-			it.DateOf, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
+			it.DateOf, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4935,14 +4929,8 @@ func (ec *executionContext) _Author(ctx context.Context, sel ast.SelectionSet, o
 			})
 		case "DOB":
 			out.Values[i] = ec._Author_DOB(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "DOD":
 			out.Values[i] = ec._Author_DOD(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "favCount":
 			out.Values[i] = ec._Author_favCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

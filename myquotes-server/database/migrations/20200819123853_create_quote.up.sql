@@ -1,7 +1,7 @@
 CREATE TABLE quotes(
     id BIGSERIAL PRIMARY KEY,
     body TEXT NOT NULL,
-    date_of DATE,
+    date_of timestamptz,
     subject VARCHAR(55) NOT NULL,
     fav_count integer,
     author_id BIGSERIAL REFERENCES authors (id) ON DELETE CASCADE NOT NULL,

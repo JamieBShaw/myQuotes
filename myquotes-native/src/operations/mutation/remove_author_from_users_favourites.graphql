@@ -1,0 +1,14 @@
+mutation RemoveAuthorFromUsersFav($id: ID!) {
+  removeAuthorFromFavourites(id: $id) {
+    __typename
+    id
+    name
+    DOB
+    DOD
+    quotes {
+      id
+      body
+    }
+    favCount
+  }
+}

@@ -13,16 +13,10 @@ export type AuthorData =
   | Maybe<
       {
         __typename?: "Author" | undefined;
-      } & Pick<
-        Author,
-        "id" | "subject" | "createdAt" | "updatedAt" | "name"
-      > & {
-          quotes: ({
+      } & Pick<Author, "id" | "name" | "favCount" | "DOB" | "DOD"> & {
+          quotes: {
             __typename?: "Quote" | undefined;
-          } & Pick<Quote, "id">)[];
-          user: {
-            __typename?: "User" | undefined;
-          } & Pick<User, "id">;
+          } & Pick<Quote, "id" | "body">[];
         }
     >
   | null

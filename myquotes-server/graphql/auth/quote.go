@@ -15,11 +15,17 @@ func (a *Auth) CreateQuote(ctx context.Context, input model.QuoteCreateInput) (*
 		return nil, AuthErr
 	}
 
+	dOf, err := time.Parse(layout, *input.DateOf)
+	if err != nil {
+		log.Error("Error:  ", err.Error(), "   dateOf:  ", dOf)
+		return nil, err
+	}
+
 	quote := &model.Quote{
 		AuthorID:  input.AuthorID,
 		Body:      input.Body,
 		Subject:   &input.Subject,
-		DateOf:    &input.DateOf,
+		DateOf:    &dOf,
 		CreatorID: user.ID,
 	}
 
@@ -51,11 +57,18 @@ func (a *Auth) EditQuote(ctx context.Context, input model.EditQuote) (*model.Quo
 		return nil, AuthErr
 	}
 
+	dOf, err := time.Parse("2006-01-02T15:04:05Z07:00", *input.DateOf)
+	if err != nil {
+		log.Error("Error:  ", err)
+		log.Info("dOf: ", dOf)
+		return nil, err
+	}
+
 	quote := &model.Quote{
 		ID:        input.ID,
 		Body:      *input.Body,
 		Subject:   input.Subject,
-		DateOf:    input.DateOf,
+		DateOf:    &dOf,
 		CreatorID: user.ID,
 	}
 

@@ -1,5 +1,5 @@
 import React, { createContext, Dispatch, useReducer } from "react";
-import { IUserActions } from "../actions/actions";
+import { IUserActions } from "../actions/authActions";
 import { authReducer } from "../reducer/authReducer";
 import { Scalars } from "../../generated/graphql";
 import { AuthorData, QuoteData } from "../../utils/interfaces";

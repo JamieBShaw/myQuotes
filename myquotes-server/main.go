@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -57,27 +58,29 @@ func main() {
 
 	router := chi.NewRouter()
 
-	//opts := cors.Options{
-	//	AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
-	//		"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
-	//		"http://localhost:19006/", "http://192.168.0.189:19006/",
-	//		"http://localhost:19006", "http://192.168.0.189:19001",
-	//		"exp://192.168.0.189:19000", "exp://192.168.0.189:19000", "192.168.0.189:8080",
-	//			"192.168.0.189:8080"},
-	//	AllowedMethods:         []string{"*"},
-	//	AllowedHeaders:         []string{"*"},
-	//	ExposedHeaders:         []string{"*"},
-	//	AllowCredentials:       true,
-	//	OptionsPassthrough:     true,
-	//	Debug:                  true,
-	//}
-	//router.Use(cors.New(opts).Handler)
+	opts := cors.Options{
+		AllowedOrigins: []string{"http://localhost:8080/", "http://localhost:19003/",
+			"exp://192.168.0.189:19000/", "exp://127.0.0.1:19000/",
+			"http://localhost:19006/", "http://192.168.0.189:19006/",
+			"http://localhost:19006", "http://192.168.0.189:19001",
+			"exp://192.168.0.189:19000", "exp://192.168.0.189:19000", "192.168.0.189:8080",
+				"192.168.0.189:8080"},
+		AllowedMethods:         []string{"*"},
+		AllowedHeaders:         []string{"*"},
+		ExposedHeaders:         []string{"*"},
+		AllowCredentials:       true,
+		OptionsPassthrough:     true,
+		Debug:                  true,
+	}
+	router.Use(cors.New(opts).Handler)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(customMiddleware.AuthMiddleware(db))
+	//router.Use(customMiddleware.QuoteLoaderMiddleware(db))
+	//router.Use(customMiddleware.AuthorLoaderMiddleware(db))
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", srv)
+	router.Handle("/query", srv )
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))

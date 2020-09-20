@@ -2,8 +2,6 @@ package resolver
 
 import (
 	"context"
-
-
 	"github.com/JamieBShaw/myquotes-server/graphql/generated"
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
 )
@@ -25,7 +23,7 @@ func (r *queryResolver) Quote(_ context.Context, id string) (*model.Quote, error
 	return r.Auth.Repo.QuoteByID(id)
 }
 
-func (r *queryResolver) Quotes(_ context.Context, filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
+func (r *queryResolver) Quotes(ctx context.Context, filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
 	return r.Auth.Repo.GetQuotes(filter, limit, offset)
 }
 

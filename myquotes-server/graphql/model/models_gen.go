@@ -23,11 +23,11 @@ type EditAuthor struct {
 }
 
 type EditQuote struct {
-	ID      string     `json:"id"`
-	Body    *string    `json:"body"`
-	Author  *string    `json:"author"`
-	DateOf  *time.Time `json:"dateOf"`
-	Subject *string    `json:"subject"`
+	ID      string  `json:"id"`
+	Body    *string `json:"body"`
+	Author  *string `json:"author"`
+	DateOf  *string `json:"dateOf"`
+	Subject *string `json:"subject"`
 }
 
 type LoginInput struct {

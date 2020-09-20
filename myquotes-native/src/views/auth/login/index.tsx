@@ -16,7 +16,7 @@ import { AppTextInput } from "../../../components/AppTextInput";
 import { styles } from "./styles";
 import { setUserToken } from "../../../utils/token";
 import { AuthContext } from "../../../state/context/auth";
-import { ActionTypes } from "../../../state/actions/actions";
+import { ActionTypes } from "../../../state/actions/authActions";
 import { GraphQLError } from "graphql";
 import { useNavigation } from "@react-navigation/native";
 
