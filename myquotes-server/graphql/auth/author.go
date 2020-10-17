@@ -24,25 +24,25 @@ func (a *Auth) CreateAuthor(ctx context.Context, input model.AuthorCreateInput) 
 	// if no error that means author with that name already exists
 	_, err = a.Repo.GetAuthorByName(input.Name)
 	if err == nil {
-		log.Error("Error:  ", "Author already exists with that name")
+		log.Error("Error:  ", "author already exists with that name")
 		return nil, err
 	}
 
-	 dob, err := ParseDate(layout, *input.Dob);
-	 if err != nil {
+	dob, err := ParseDate(layout, *input.Dob)
+	if err != nil {
 		log.Error("Error:  ", err.Error(), "   dob:  ", dob)
 		return nil, err
-	 }
-	dod, err := ParseDate(layout, *input.Dod);
+	}
+	dod, err := ParseDate(layout, *input.Dod)
 	if err != nil {
 		log.Error("Error:  ", err.Error(), "   dod:  ", dod)
 		return nil, err
 	}
 
 	author := &model.Author{
-		Name:      input.Name,
-		Dob: dob,
-		Dod: dod,
+		Name: input.Name,
+		Dob:  dob,
+		Dod:  dod,
 
 		CreatorID: user.ID,
 	}
@@ -53,7 +53,7 @@ func (a *Auth) CreateAuthor(ctx context.Context, input model.AuthorCreateInput) 
 		return nil, GenericErr
 	}
 
-	log.Info("Author successfully created")
+	log.Info("author successfully created")
 	return author, nil
 }
 
@@ -110,7 +110,7 @@ func (a *Auth) EditAuthorName(ctx context.Context, id string, name string) (*mod
 	return author, nil
 }
 
-func (a *Auth) EditAuthorSubject(ctx context.Context, id string, subject string) (*model.Author, error) {
+func (a *Auth) EditAuthorSubject(_ context.Context, _, _ string) (*model.Author, error) {
 	return nil, nil
 }
 
@@ -196,7 +196,6 @@ func (a *Auth) RemoveAuthorFromFavourites(ctx context.Context, id string) ([]*mo
 
 	return nil, nil
 }
-
 
 func ParseDate(layout, date string) (time.Time, error) {
 	parsedDate, err := time.Parse(layout, date)

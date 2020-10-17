@@ -11,6 +11,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/joho/godotenv v1.3.0
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/rs/cors v1.6.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/vektah/gqlparser v1.3.1
 	github.com/vektah/gqlparser/v2 v2.0.1

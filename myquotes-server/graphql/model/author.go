@@ -30,16 +30,16 @@ type AuthorRepository interface {
 }
 
 type AuthorFilter struct {
-	Name    *string `json:"name"`
-	Subject *string `json:"subject"`
-	CreatorID *string `json:"creatorID"`
-	FavCount *int32 `json:"favCount"`
-	Dob *string `json:"dob"`
+	Name      *string   `json:"name"`
+	Subject   *string   `json:"subject"`
+	CreatorID *string   `json:"creatorID"`
+	FavCount  *int32    `json:"favCount"`
+	Dob       *string   `json:"dob"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
 type AuthorCreateInput struct {
-	Name string    `json:"name" validate:"required,max=42,min=2"`
+	Name string  `json:"name" validate:"required,max=42,min=2"`
 	Dob  *string `json:"dob"`
 	Dod  *string `json:"dod"`
 }

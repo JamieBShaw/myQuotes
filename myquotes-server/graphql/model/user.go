@@ -9,14 +9,14 @@ import (
 )
 
 type User struct {
-	ID               string    `json:"id" validate:"required"`
-	Username         string    `json:"username" validate:"required,max=42,min=2"`
-	Email            string    `json:"email" validate:"required,email"`
-	Password         string    `json:"password" validate:"required"`
-	IsLoggedIn       bool      `json:"isLoggedIn"`
-	ExpoNotificationToken string `json:"expoNotificationToken"`
-	CreatedAt        time.Time `json:"-"`
-	UpdatedAt        time.Time `json:"-"`
+	ID                    string    `json:"id" validate:"required"`
+	Username              string    `json:"username" validate:"required,max=42,min=2"`
+	Email                 string    `json:"email" validate:"required,email"`
+	Password              string    `json:"password" validate:"required"`
+	IsLoggedIn            bool      `json:"isLoggedIn"`
+	ExpoNotificationToken string    `json:"expoNotificationToken"`
+	CreatedAt             time.Time `json:"-"`
+	UpdatedAt             time.Time `json:"-"`
 }
 
 type UserRepository interface {
@@ -28,7 +28,6 @@ type UserRepository interface {
 	ByQuote(quote *Quote) (*User, error)
 	ByField(field, value string) (*User, error)
 	ByFieldOrField(fieldA, valueA, fieldB, valueB string) (*User, error)
-
 
 	CreateUser(user *User) (*User, error)
 }

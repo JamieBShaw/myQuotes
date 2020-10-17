@@ -4,17 +4,17 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   useCreateAuthorMutation,
   useGetAuthorsQuery,
-  Author,
 } from "../../../generated/graphql";
 import moment from "moment";
 
-import { Header } from "../../../components/Header";
 import { styles } from "./styles";
 import { AppButton } from "../../../components/AppButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppTextInput } from "../../../components/AppTextInput";
 import { AuthContext } from "../../../state/context/auth";
 import { AuthorList } from "../../../components/AuthorList";
+
+// useState AuthorCreateInput
 
 const CreateAuthorView: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -43,6 +43,7 @@ const CreateAuthorView: React.FC = () => {
   });
 
   const onHandleDateChange = (event: any, selectedDate?: any): void => {
+    console.log("event: ", event);
     const currentDate: Date = selectedDate || date;
     console.log("currentDate:  ", currentDate);
     setDate(currentDate);
@@ -68,12 +69,10 @@ const CreateAuthorView: React.FC = () => {
     setAuthorName(event.text);
   };
 
-  console.log("dateString:  ", dateString);
-
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.outerContainer}>
-        <Header title="Create..." signOut />
+        {/* <Header title="Create..." signOut /> */}
         <View style={styles.innerContainer}>
           <AppTextInput
             name="authorName"
@@ -90,6 +89,9 @@ const CreateAuthorView: React.FC = () => {
                 onChange={onHandleDateChange}
               />
             )}
+          </View>
+          <View>
+            <Text>{dateString}</Text>
           </View>
 
           <AppButton text="create" onPress={handleCreate} />

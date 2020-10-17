@@ -23,7 +23,7 @@ func (r *queryResolver) Quote(_ context.Context, id string) (*model.Quote, error
 	return r.Auth.Repo.QuoteByID(id)
 }
 
-func (r *queryResolver) Quotes(ctx context.Context, filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
+func (r *queryResolver) Quotes(_ context.Context, filter *model.QuoteFilter, limit *int, offset *int) ([]*model.Quote, error) {
 	return r.Auth.Repo.GetQuotes(filter, limit, offset)
 }
 
@@ -31,6 +31,6 @@ func (r *queryResolver) Author(_ context.Context, id string) (*model.Author, err
 	return r.Auth.Repo.AuthorByID(id)
 }
 
-func (r *queryResolver) Authors(_ context.Context, filter *model.AuthorFilter, limit *int, offset *int ) ([]*model.Author, error) {
+func (r *queryResolver) Authors(_ context.Context, filter *model.AuthorFilter, limit *int, offset *int) ([]*model.Author, error) {
 	return r.Auth.Repo.GetAuthors(filter, limit, offset)
 }

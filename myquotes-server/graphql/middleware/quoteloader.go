@@ -34,7 +34,6 @@ func QuoteLoaderMiddleware(repo *database.Repository) func(http.Handler) http.Ha
 
 }
 
-
 func GetQuoteLoader(ctx context.Context) *QuoteLoader {
 	return ctx.Value(quoteLoaderKey).(*QuoteLoader)
 }

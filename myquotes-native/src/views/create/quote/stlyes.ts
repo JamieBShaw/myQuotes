@@ -14,6 +14,9 @@ export const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 30,
   },
+  inputs: {
+    paddingBottom: 25,
+  },
   quoteContainer: {
     backgroundColor: Theme.colors.background,
     borderBottomColor: "black",

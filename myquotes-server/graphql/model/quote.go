@@ -33,13 +33,13 @@ type QuoteFilter struct {
 	CreatorID *string   `json:"creatorId"`
 	Subject   *string   `json:"subject"`
 	FavCount  int32     `json:"favCount"`
-	DateOf    *string `json:"dateOf"`
+	DateOf    *string   `json:"dateOf"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
 type QuoteCreateInput struct {
-	Body     string    `json:"body" validate:"required,max=164,min=1"`
-	AuthorID string    `json:"authorId" validate:"required"`
+	Body     string  `json:"body" validate:"required,max=164,min=1"`
+	AuthorID string  `json:"authorId" validate:"required"`
 	DateOf   *string `json:"dateOf"`
-	Subject  string    `json:"subject"`
+	Subject  string  `json:"subject"`
 }

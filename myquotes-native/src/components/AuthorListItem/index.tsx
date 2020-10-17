@@ -31,10 +31,16 @@ export const AuthorItem: React.FC<Props> = ({
     <View style={styles.container}>
       <View style={styles.secondaryContainer}>
         <AuthorProfileImage />
-        <Text>
+        <Text style={styles.author}>
           {item.id} | {item.name} | {item.DOB}
         </Text>
-        <View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-end",
+            justifyContent: "flex-end",
+          }}
+        >
           <MaterialIcons
             name="arrow-drop-down"
             size={24}
@@ -71,9 +77,7 @@ const styles = StyleSheet.create({
   },
 
   secondaryContainer: {
-    flexDirection: "row",
     width: "100%",
-    justifyContent: "space-between",
   },
   body: {
     fontFamily: Theme.font.primary,
@@ -83,5 +87,6 @@ const styles = StyleSheet.create({
   author: {
     paddingTop: 12,
     fontFamily: Theme.font.primary,
+    fontWeight: "bold",
   },
 });

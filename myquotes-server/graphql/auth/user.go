@@ -96,7 +96,6 @@ func (a *Auth) LoginUser(ctx context.Context, input *model.LoginInput) (*model.A
 	}, nil
 }
 
-
 func (a *Auth) FavQuotesOfUser(ctx context.Context, user *model.User) ([]*model.Quote, error) {
 
 	quotes, err := a.Repo.GetUsersFavouriteQuotes(user.ID)
@@ -115,7 +114,7 @@ func (a *Auth) FavAuthorsOfUser(ctx context.Context, user *model.User) ([]*model
 		graphqlAddErrF(ctx, FavAuthErr.Error(), "favouriteAuthors")
 		return nil, err
 	}
-	
+
 	return authors, nil
 }
 

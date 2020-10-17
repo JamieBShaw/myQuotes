@@ -25,9 +25,7 @@ func TestRegisterInput(t *testing.T) {
 	//	ConfirmPassword: "password",
 	//}
 
-
-	}
-
+}
 
 func TestGenerateToken(t *testing.T) {
 	u := &User{

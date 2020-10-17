@@ -3,8 +3,9 @@ package resolver
 import (
 	"context"
 	"errors"
-	log "github.com/sirupsen/logrus"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/JamieBShaw/myquotes-server/graphql/generated"
 	"github.com/JamieBShaw/myquotes-server/graphql/model"
@@ -12,12 +13,10 @@ import (
 
 type mutationResolver struct{ *Resolver }
 
-
-
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
-func (r *mutationResolver) SetExpoNotifcationToken(ctx context.Context, id string) (bool, error) {
+func (r *mutationResolver) SetExpoNotifcationToken(_ context.Context, _ string) (bool, error) {
 	log.Info("SETTING USERS EXPO PUSH TOKEN")
 	return true, nil
 }

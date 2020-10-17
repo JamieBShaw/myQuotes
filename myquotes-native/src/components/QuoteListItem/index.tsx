@@ -80,7 +80,7 @@ export const QuoteItem: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     backgroundColor: Theme.colors.background,
     padding: 5,

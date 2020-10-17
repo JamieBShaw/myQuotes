@@ -124,6 +124,3 @@ func (r *Repository) AddQuoteToFavourites(user *model.User) (*model.User, error)
 
 	return user, nil
 }
-
-
-
