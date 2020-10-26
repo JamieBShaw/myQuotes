@@ -23,7 +23,13 @@ import (
 	"github.com/go-pg/pg/v10"
 )
 
+var (
+	port = os.Getenv("PORT")
+	dbPort = os.Getenv("DB_PORT")
+)
+
 const defaultPort = "8080"
+const defaultDbPort = "5432"
 
 func main() {
 	err := godotenv.Load()
@@ -31,10 +37,19 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	if port == "" {
+		port = defaultPort
+	}
+
+	if dbPort == "" {
+		dbPort = defaultDbPort
+	}
+
 	config := database.NewConf(&pg.Options{
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASS"),
 		Database: os.Getenv("DB_NAME"),
+		Addr: dbPort,
 	})
 
 	db := database.Set(config)
@@ -43,10 +58,7 @@ func main() {
 
 	db.DB.AddQueryHook(database.DBLogger{})
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
+
 
 	auth := a.NewAuth(db)
 	baseResolver := resolver.NewResolver(*auth)

@@ -18,12 +18,12 @@ func (u *User) Validate() error {
 	return validate.Struct(u)
 }
 
-func (reg *RegisterInput) ValidateInput() error {
+func (r *RegisterInput) ValidateInput() error {
 	validate := validator.New()
 	if err := validate.RegisterValidation("email", IsEmailValid); err != nil {
 		return err
 	}
-	return validate.Struct(reg)
+	return validate.Struct(r)
 }
 
 func IsEmailValid(fl validator.FieldLevel) bool {
