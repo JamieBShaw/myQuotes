@@ -2,11 +2,12 @@
 
 ## Server
 Golang-graphql
+
+## Database
 Postgres
 
 ## Front End
-Typescript-react-native
-Apollo Client
+Typescript-react-native with Apollo Client
 
 ## Login View
 
