@@ -13,6 +13,8 @@ export const styles = StyleSheet.create({
   innerContainer: {
     padding: 10,
     marginBottom: 30,
+    textAlign: "center",
+    justifyContent: "center",
   },
   quoteContainer: {
     backgroundColor: Theme.colors.background,
@@ -20,5 +22,10 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 5,
     margin: 5,
+  },
+
+  input: {
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });

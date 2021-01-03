@@ -3,7 +3,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 
 import { MaterialIcons } from "@expo/vector-icons";
 import MyQuotes from "../views/myquotes";
-import Home from "../views/home";
+// import Home from "../views/home";
 import CreateTopTabNav from "./MainTopTabNavigation";
 
 const Tab = createMaterialBottomTabNavigator();
@@ -14,10 +14,11 @@ export const MainTabNavigation = () => {
       activeColor="green"
       inactiveColor="black"
       barStyle={{ backgroundColor: "white" }}
-      initialRouteName="Home"
+      initialRouteName="MyQuotes"
       shifting
+    
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Home"
         component={Home}
         options={{
@@ -26,7 +27,7 @@ export const MainTabNavigation = () => {
           ),
           tabBarBadge: true,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="MyQuoutes"
         component={MyQuotes}
