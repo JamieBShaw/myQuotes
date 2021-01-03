@@ -16,6 +16,7 @@ export const MainTabNavigation = () => {
       barStyle={{ backgroundColor: "white" }}
       initialRouteName="MyQuotes"
       shifting
+    
     >
       {/* <Tab.Screen
         name="Home"

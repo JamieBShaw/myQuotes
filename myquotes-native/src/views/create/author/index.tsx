@@ -12,7 +12,8 @@ import { AppButton } from "../../../components/AppButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppTextInput } from "../../../components/AppTextInput";
 import { AuthContext } from "../../../state/context/auth";
-import { AuthorList } from "../../../components/AuthorList";
+
+import { Header } from "../../../components/Header";
 
 // useState AuthorCreateInput
 
@@ -43,12 +44,11 @@ const CreateAuthorView: React.FC = () => {
   });
 
   const onHandleDateChange = (event: any, selectedDate?: any): void => {
-    console.log("event: ", event);
     const currentDate: Date = selectedDate || date;
-    console.log("currentDate:  ", currentDate);
+    setShow(false);
+
     setDate(currentDate);
     setDateString(moment(currentDate).format("YYYY-MM-DD"));
-    setShow(false);
   };
 
   const handleCreate = () => {
@@ -72,15 +72,22 @@ const CreateAuthorView: React.FC = () => {
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.outerContainer}>
-        {/* <Header title="Create..." signOut /> */}
+        <Header title="Create..." signOut />
         <View style={styles.innerContainer}>
           <AppTextInput
+            styles={styles.input}
             name="authorName"
             value={authorName}
+            placeholder="Authors Name"
             onCustomChange={handleInputs}
+            style={{ borderBottomWidth: 1 }}
           />
-          <AppButton text="Select Date" onPress={() => setShow(!show)} />
-          <View>
+          <AppButton
+            style={styles.input}
+            text="Select Date authors Date of Birth: "
+            onPress={() => setShow(true)}
+          />
+          <View style={styles.input}>
             {show && (
               <DateTimePicker
                 value={date}
@@ -90,16 +97,20 @@ const CreateAuthorView: React.FC = () => {
               />
             )}
           </View>
-          <View>
-            <Text>{dateString}</Text>
+          <View style={styles.input}>
+            <Text style={{ fontSize: 14 }}>{dateString}</Text>
           </View>
 
-          <AppButton text="create" onPress={handleCreate} />
-          <AuthorList
+          <AppButton
+            style={styles.input}
+            text="create"
+            onPress={handleCreate}
+          />
+          {/* <AuthorList
             authorData={data?.authors}
             handleRefetch={refetch}
             loading={loading}
-          />
+          /> */}
         </View>
       </View>
     </SafeAreaView>

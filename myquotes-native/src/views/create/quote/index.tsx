@@ -8,9 +8,9 @@ import {
   //QuoteCreateInput,
 } from "../../../generated/graphql";
 import { AuthContext } from "../../../state/context/auth";
-import { QuoteList } from "../../../components/QuoteList";
 import { QuoteListItemScaffold } from "../../../components/QuoteListItem/quoteListItemScaffold";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Header } from "../../../components/Header";
 
 // const initialState: QuoteCreateInput = {
 // authorId: "",
@@ -49,28 +49,9 @@ const CreateQuoteView = () => {
     <SafeAreaView style={styles.screen}>
       <TouchableWithoutFeedback onPress={() => console.log("Dismiss keyboard")}>
         <View style={styles.outerContainer}>
-          {/* <Header title="Create..." signOut /> */}
+          <Header title="Create..." signOut />
           <View style={styles.inputs}>
             <QuoteListItemScaffold />
-            {/* <AppTextInput
-            placeholder="Author "
-            name="authorId"
-            onCustomChange={handleInputs}
-            value={inputs.authorId}
-          />
-          <AppTextInput
-            multiline
-            placeholder="Write your quote here..."
-            name="body"
-            onCustomChange={handleInputs}
-            value={inputs.body}
-          /> */}
-          </View>
-          <View style={styles.innerContainer}>
-            <QuoteList
-              quotesData={user ? data?.quotes : undefined}
-              loading={loading}
-            />
           </View>
         </View>
       </TouchableWithoutFeedback>
